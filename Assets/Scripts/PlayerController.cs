@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
         Vector3 finalForce = Vector3.zero;
 
 
-        rb.AddForce(constantForce * force, ForceMode.Force);
+        rb.AddForce(constantForce, ForceMode.Force);
 
         Ray ray = mainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
         RaycastHit output;
