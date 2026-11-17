@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using TMPro;
@@ -15,16 +16,10 @@ public enum ResourceType
 public class Resource
 {
 	public string id;
-	public ResourceType type;
 	public float spawnTime;
+	public Port spawnPort; // In the Inspector, you drag/drop or click the circle to select an existing Port
 
 	public Resource() { }
-
-	public Resource(ResourceType type, float spawnTime)
-	{
-		this.type = type;
-		this.spawnTime = spawnTime;
-	}
 }
 
 [Serializable]
@@ -35,35 +30,35 @@ public class Wave
 	public int waveNumber;
 	public float totalTime;
 
-	public List<Resource> resources;
-
-	public Wave()
-	{
-		resources = new List<Resource>();
-	}
-
-	public Wave(string waveName, int waveNumber, float totalTime)
-	{
-		this.waveName = waveName;
-		this.waveNumber = waveNumber;
-		this.totalTime = totalTime;
-		resources = new List<Resource>();
-	}
+	// The wave now directly controls what spawns and when
+	public List<Resource> resources = new List<Resource>();
 }
 
 public class GameManager : MonoBehaviour
 {
+	private struct PendingSpawn
+	{
+		public Port port;
+		public float spawnTime;
+	}
+
 	private bool waveStarted = false;
 	private bool waveLasting = false;
 	private bool waveEnded = false;
 
 	private int currentWaveIndex = 0;
-	private float currentWaveTime = 0f;
+	private float currentWaveTimeRemaining = 0f;
+	private float currentWaveElapsedTime = 0f;
 
 	public TextMeshProUGUI waveNumberCounter;
 	public TextMeshProUGUI countdownTimer;
 
 	public List<Wave> waves = new List<Wave>();
+
+	// You can still keep a list of all ports here if needed for other logic
+	public List<Port> ports = new List<Port>();
+
+	private List<PendingSpawn> pendingSpawns = new List<PendingSpawn>();
 
 	public static GameManager Instance { get; private set; }
 
@@ -98,7 +93,9 @@ public class GameManager : MonoBehaviour
 			{
 				Resource res = currentWave.resources[r];
 
-				string generatedId = $"{currentWave.waveNumber}_{res.type}_{(r + 1):D3}";
+				// Dynamically read the resource type from the assigned port, fallback if unassigned
+				string typeString = res.spawnPort != null ? res.spawnPort.producedResource.ToString() : "UNASSIGNED";
+				string generatedId = $"{currentWave.waveNumber}_{typeString}_{(r + 1):D3}";
 
 				if (res.id != generatedId)
 				{
@@ -120,20 +117,27 @@ public class GameManager : MonoBehaviour
 	{
 		if (waveLasting)
 		{
-			if (currentWaveTime > 0f)
+			if (currentWaveTimeRemaining > 0f)
 			{
-				currentWaveTime -= Time.deltaTime;
+				currentWaveTimeRemaining -= Time.deltaTime;
+				currentWaveElapsedTime += Time.deltaTime;
 
-				int minutes = Mathf.FloorToInt(currentWaveTime / 60f);
-				int seconds = Mathf.FloorToInt(currentWaveTime % 60f);
+				int minutes = Mathf.FloorToInt(currentWaveTimeRemaining / 60f);
+				int seconds = Mathf.FloorToInt(currentWaveTimeRemaining % 60f);
 
 				if (countdownTimer != null)
 				{
 					countdownTimer.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 				}
+
+				while (pendingSpawns.Count > 0 && currentWaveElapsedTime >= pendingSpawns[0].spawnTime)
+				{
+					SpawnResource(pendingSpawns[0].port);
+					pendingSpawns.RemoveAt(0);
+				}
 			} else
 			{
-				currentWaveTime = 0f;
+				currentWaveTimeRemaining = 0f;
 				waveLasting = false;
 				waveEnded = true;
 				OnWaveComplete();
@@ -143,12 +147,31 @@ public class GameManager : MonoBehaviour
 
 	public void StartWave(int index)
 	{
-		waveNumberCounter.text = waves[index].waveNumber.ToString();
+		if (waveNumberCounter != null)
+		{
+			waveNumberCounter.text = waves[index].waveNumber.ToString();
+		}
 
 		if (index >= 0 && index < waves.Count)
 		{
 			currentWaveIndex = index;
-			currentWaveTime = waves[index].totalTime;
+
+			currentWaveTimeRemaining = waves[index].totalTime;
+			currentWaveElapsedTime = 0f;
+
+			pendingSpawns.Clear();
+
+			// Simplified queue logic: Loop through the wave's own resource list
+			foreach (Resource res in waves[index].resources)
+			{
+				// Only queue if a port is assigned and the time fits within the wave
+				if (res.spawnPort != null && res.spawnTime <= waves[index].totalTime && res.spawnTime >= 0)
+				{
+					pendingSpawns.Add(new PendingSpawn { port = res.spawnPort, spawnTime = res.spawnTime });
+				}
+			}
+
+			pendingSpawns.Sort((a, b) => a.spawnTime.CompareTo(b.spawnTime));
 
 			waveStarted = true;
 			waveLasting = true;
@@ -156,6 +179,12 @@ public class GameManager : MonoBehaviour
 
 			Debug.Log($"Started: {waves[index].waveName} for {waves[index].totalTime} seconds.");
 		}
+	}
+
+	public void SpawnResource(Port destination)
+	{
+		// Reads the type dynamically from the Port MonoBehaviour
+		Debug.Log($"[{currentWaveElapsedTime:F1}s] Spawning {destination.producedResource} at Port: {destination.gameObject.name}!");
 	}
 
 	private void OnWaveComplete()
