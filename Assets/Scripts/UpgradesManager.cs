@@ -62,25 +62,26 @@ public class UpgradesManager : MonoBehaviour
 	{
 		if (Instance == null)
 		{
+
 			Instance = this;
-		} else
+			modifiers = new List<Modifier>();
+			float[] tier1 = { 1.0f, 1.05f, 1.1f, 1.2f, 1.35f, 1.5f, 1.75f, 2.0f, 3.0f, 5.0f };
+			float[] tier2 = { 1.0f, 1.05f, 1.1f, 1.2f, 1.35f, 1.5f, 1.75f, 2.0f, 3.0f, 5.0f };
+			float[] tier3 = { 1.0f, 1.05f, 1.1f, 1.2f, 1.35f, 1.5f, 1.75f, 2.0f, 3.0f, 5.0f };
+			float[] tier4 = { 1.0f, 1.05f, 1.1f, 1.2f, 1.35f, 1.5f, 1.75f, 2.0f, 3.0f, 5.0f };
+			modifiers.Add(new Modifier("money_mult", 10, tier1, 25));
+			modifiers.Add(new Modifier("vortex_pull", 10, tier2, 25));
+			modifiers.Add(new Modifier("hull_str", 10, tier3, 25));
+			modifiers.Add(new Modifier("placeholder", 10, tier4, 25));
+
+		}
+		else
 		{
 			Destroy(gameObject);
 			return;
 		}
-	}
 
-	void Start()
-	{
-		modifiers = new List<Modifier>();
-		float[] tier1 = { 1.0f, 1.05f, 1.1f, 1.2f, 1.35f, 1.5f, 1.75f, 2.0f, 3.0f, 5.0f };
-		float[] tier2 = { 1.0f, 1.05f, 1.1f, 1.2f, 1.35f, 1.5f, 1.75f, 2.0f, 3.0f, 5.0f };
-		float[] tier3 = { 1.0f, 1.05f, 1.1f, 1.2f, 1.35f, 1.5f, 1.75f, 2.0f, 3.0f, 5.0f };
-		float[] tier4 = { 1.0f, 1.05f, 1.1f, 1.2f, 1.35f, 1.5f, 1.75f, 2.0f, 3.0f, 5.0f };
-		modifiers.Add(new Modifier("money_mult", 10, tier1, 25));
-		modifiers.Add(new Modifier("vortex_pull", 10, tier2, 25));
-		modifiers.Add(new Modifier("hull_str", 10, tier3, 25));
-		modifiers.Add(new Modifier("placeholder", 10, tier4, 25));
+		
 	}
 
 	float ProvideCurrentModifierValue(Modifier query_modifier)

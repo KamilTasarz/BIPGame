@@ -29,8 +29,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.294, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 2.58, y: 2.58, z: 2.58}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2197401977418598860}
   - {fileID: 8157429136756430619}
@@ -49,9 +49,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1427f83be5a3c946a3129c1ca01e56a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoatBehaviour
-  boatSpeed: 1.2
+  boatSpeed: 0.4
   radius: 15
   rotSpeed: 2
+  carriedResource: 0
+  rewardValue: 25
+  originPort: {fileID: 0}
 --- !u!54 &3572369945372128318
 Rigidbody:
   m_ObjectHideFlags: 0

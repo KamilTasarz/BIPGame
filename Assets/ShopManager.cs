@@ -30,8 +30,6 @@ public class ShopManager : MonoBehaviour
 
 	void Start()
 	{
-		UpdateMoneyUI();
-
 		if (notEnoughMoneyPanel != null)
 		{
 			notEnoughMoneyPanel.SetActive(false);
@@ -40,6 +38,8 @@ public class ShopManager : MonoBehaviour
 		{
 			shopPanel.SetActive(false);
 		}
+
+		UpdateMoneyUI();
 	}
 
 	public void ChangeMoney(int amount)
@@ -50,6 +50,12 @@ public class ShopManager : MonoBehaviour
 
 	public void BuyItem(int itemIndex)
 	{
+		if (UpgradesManager.Instance == null)
+		{
+			Debug.LogError("Brak aktywnego obiektu UpgradesManager na scenie!");
+			return;
+		}
+
 		List<Modifier> mods = UpgradesManager.Instance.modifiers;
 
 		// Failsafe if we click a button but there are no modifiers for that slot
@@ -79,6 +85,12 @@ public class ShopManager : MonoBehaviour
 	// Maps the modifier data directly to your UI text arrays
 	private void RefreshShopUI()
 	{
+		if (UpgradesManager.Instance == null)
+		{
+			Debug.LogError("Brak aktywnego obiektu UpgradesManager na scenie!");
+			return;
+		}
+
 		List<Modifier> mods = UpgradesManager.Instance.modifiers;
 
 		for (int i = 0; i < itemButtons.Length; i++)
