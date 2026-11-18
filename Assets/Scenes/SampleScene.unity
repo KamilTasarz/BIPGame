@@ -689,28 +689,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0c3dd34ad9924747bc3993196b93e3f, type: 3}
---- !u!1 &1308337195 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5217841958336176442, guid: fa472d60669cd954bbb0a420a2be15fa, type: 3}
-  m_PrefabInstance: {fileID: 1805694551}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1308337199
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1308337195}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dff63d5b92ce324988ad505066d5670, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  visualWave: {fileID: 3544274309172098140, guid: ec752d7773d849045b3055e7d9f6779f, type: 3}
-  floorMask:
-    serializedVersion: 2
-    m_Bits: 64
-  rayDistance: 500
 --- !u!1 &1351331872
 GameObject:
   m_ObjectHideFlags: 0
@@ -920,10 +898,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5217841958336176442, guid: fa472d60669cd954bbb0a420a2be15fa, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1308337199}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fa472d60669cd954bbb0a420a2be15fa, type: 3}
 --- !u!1001 &1922752968
 PrefabInstance:
@@ -1003,7 +978,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a9bea72dbabbf9c4e821b6655d43d493, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a9bea72dbabbf9c4e821b6655d43d493, type: 3}
       propertyPath: m_TagString
@@ -1136,26 +1111,6 @@ PrefabInstance:
     - target: {fileID: 4148133833486520665, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5462297602382168235, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
-      propertyPath: force
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 5462297602382168235, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
-      propertyPath: radius
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 5462297602382168235, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
-      propertyPath: rotSpeed
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5462297602382168235, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
-      propertyPath: boatSpeed
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5462297602382168235, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
-      propertyPath: minimalForce
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
