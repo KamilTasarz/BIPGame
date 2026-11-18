@@ -28,23 +28,23 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "4c9266b3-901d-43c1-8265-ade84de34746",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "PullAction",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "f53e2287-4899-4b8a-84ac-959a304a8e47",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "PushAction",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4c9266b3-901d-43c1-8265-ade84de34746",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "PullAction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

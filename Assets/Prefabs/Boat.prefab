@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1427f83be5a3c946a3129c1ca01e56a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoatBehaviour
-  boatSpeed: 0.4
+  boatSpeed: 0.8
   radius: 1
   rotSpeed: 1.6
   carriedResource: 0

@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour
                     waveObj = Instantiate(visualWave, output.point, Quaternion.identity).transform;
                 }
 
-                float sign = isPulling ? -1.0f : 1.0f;
+                float sign = isPulling ? 1.0f : -1.0f;
                 OnPressedMouseButtons?.Invoke(output.point, sign);
             }
         }
@@ -85,11 +85,11 @@ public class PlayerController : MonoBehaviour
             float x = waveObj.position.x + Mathf.Cos(angle) * radius;
             float y = waveObj.position.z + Mathf.Sin(angle) * radius;
 
-            line.SetPosition(i, new Vector3(x, 0.1f, y));
+            line.SetPosition(i, new Vector3(x, 0.3f, y));
 
         }
 
-        line.SetPosition(circleSegments, new Vector3(waveObj.position.x + radius, 0.1f, waveObj.position.z));
+        line.SetPosition(circleSegments, new Vector3(waveObj.position.x + radius, 0.3f, waveObj.position.z));
 
     }
 
