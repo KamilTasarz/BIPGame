@@ -5,4 +5,5 @@ public class Port : MonoBehaviour
 {
 	public ResourceType producedResource;
 	public List<ResourceType> acceptedResources = new List<ResourceType>();
+	public Transform boatSpawnPoint;
 }

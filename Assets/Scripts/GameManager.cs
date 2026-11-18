@@ -26,7 +26,6 @@ public class Resource
 public class Wave
 {
 	public string waveName = "New Wave";
-
 	public int waveNumber;
 	public float totalTime;
 
@@ -49,9 +48,14 @@ public class GameManager : MonoBehaviour
 	private float currentWaveTimeRemaining = 0f;
 	private float currentWaveElapsedTime = 0f;
 
+	[Header("UI Elements")]
 	public TextMeshProUGUI waveNumberCounter;
 	public TextMeshProUGUI countdownTimer;
 
+	[Header("Prefabs")]
+	public GameObject boatPrefab;
+
+	[Header("Data")]
 	public List<Wave> waves = new List<Wave>();
 	public List<Port> ports = new List<Port>();
 
@@ -151,7 +155,6 @@ public class GameManager : MonoBehaviour
 		if (index >= 0 && index < waves.Count)
 		{
 			currentWaveIndex = index;
-
 			currentWaveTimeRemaining = waves[index].totalTime;
 			currentWaveElapsedTime = 0f;
 
@@ -177,7 +180,28 @@ public class GameManager : MonoBehaviour
 
 	public void SpawnResource(Port destination)
 	{
-		Debug.Log($"[{currentWaveElapsedTime:F1}s] Spawning {destination.producedResource} at Port: {destination.gameObject.name}!");
+		if (boatPrefab != null)
+		{
+			GameObject newBoat = Instantiate(boatPrefab, destination.boatSpawnPoint.transform.localPosition, destination.transform.rotation, destination.transform);
+			//newBoat.gameObject.GetComponent<BoatBehaviour>().DisableRigidbody();
+			float x = destination.boatSpawnPoint.transform.position.x;
+			float y = 0.85f;
+			float z = destination.boatSpawnPoint.transform.position.z;
+			newBoat.transform.position = new Vector3(x, y, z);
+
+			BoatBehaviour boatBehaviour = newBoat.GetComponent<BoatBehaviour>();
+			if (boatBehaviour != null)
+			{
+				boatBehaviour.carriedResource = destination.producedResource;
+				boatBehaviour.originPort = destination;
+			}
+
+			//newBoat.gameObject.GetComponent<BoatBehaviour>().EnableRigidbody();
+			Debug.Log($"[{currentWaveElapsedTime:F1}s] Spawning boat with {destination.producedResource} at Port: {destination.gameObject.name}!");
+		} else
+		{
+			Debug.LogWarning("Boat Prefab is not assigned in GameManager!");
+		}
 	}
 
 	private void OnWaveComplete()
@@ -187,7 +211,6 @@ public class GameManager : MonoBehaviour
 		int nextIndex = currentWaveIndex + 1;
 		if (nextIndex < waves.Count)
 		{
-			// Open the shop instead of immediately calling StartWave()
 			ShopManager.instance.OpenShop();
 		} else
 		{
@@ -196,7 +219,6 @@ public class GameManager : MonoBehaviour
 		}
 	}
 
-	// Called by ShopManager.CloseShop() when the player exits the shop
 	public void StartNextWave()
 	{
 		int nextIndex = currentWaveIndex + 1;
