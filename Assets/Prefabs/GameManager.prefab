@@ -136,5 +136,23 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  nameTexts:
   - {fileID: 0}
-  itemPrices: 050000000600000007000000080000005a000000
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  valueTexts:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  tierTexts:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  costTexts:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
