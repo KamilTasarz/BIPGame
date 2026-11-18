@@ -1,8 +1,8 @@
-using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public enum ResourceType
@@ -13,44 +13,34 @@ public enum ResourceType
 }
 
 [Serializable]
-public class Resource
-{
-	public string id;
-	public float spawnTime;
-	public Port spawnPort;
-
-	public Resource() { }
-}
-
-[Serializable]
 public class Wave
 {
 	public string waveName = "New Wave";
 	public int waveNumber;
-	public float totalTime;
-
-	public List<Resource> resources = new List<Resource>();
+	public float totalTime = 60f;
+	public int requiredGold = 100;
 }
 
 public class GameManager : MonoBehaviour
 {
-	private struct PendingSpawn
-	{
-		public Port port;
-		public float spawnTime;
-	}
-
-	private bool waveStarted = false;
 	private bool waveLasting = false;
-	private bool waveEnded = false;
 
 	private int currentWaveIndex = 0;
 	private float currentWaveTimeRemaining = 0f;
-	private float currentWaveElapsedTime = 0f;
+	private int currentWaveGold = 0;
 
 	[Header("UI Elements")]
 	public TextMeshProUGUI waveNumberCounter;
 	public TextMeshProUGUI countdownTimer;
+	public TextMeshProUGUI goldGoalText;
+	public GameObject gameOverPanel;
+
+	[Header("Spawn Rate Settings")]
+	public float baseMinSpawnDelay = 10f;
+	public float baseMaxSpawnDelay = 15f;
+	public float firstBoatDelay = 2f;
+	public float initialStaggerDelay = 3f;
+	public bool randomizeStartOrder = true;
 
 	[Header("Prefabs")]
 	public GameObject boatPrefab;
@@ -59,8 +49,6 @@ public class GameManager : MonoBehaviour
 	[Header("Data")]
 	public List<Wave> waves = new List<Wave>();
 	public List<Port> ports = new List<Port>();
-
-	private List<PendingSpawn> pendingSpawns = new List<PendingSpawn>();
 
 	public static GameManager Instance { get; private set; }
 
@@ -82,32 +70,20 @@ public class GameManager : MonoBehaviour
 
 		for (int w = 0; w < waves.Count; w++)
 		{
-			Wave currentWave = waves[w];
-
-			if (currentWave.waveNumber == 0)
+			if (waves[w].waveNumber == 0)
 			{
-				currentWave.waveNumber = w + 1;
-			}
-
-			if (currentWave.resources == null) continue;
-
-			for (int r = 0; r < currentWave.resources.Count; r++)
-			{
-				Resource res = currentWave.resources[r];
-
-				string typeString = res.spawnPort != null ? res.spawnPort.producedResource.ToString() : "UNASSIGNED";
-				string generatedId = $"{currentWave.waveNumber}_{typeString}_{(r + 1):D3}";
-
-				if (res.id != generatedId)
-				{
-					res.id = generatedId;
-				}
+				waves[w].waveNumber = w + 1;
 			}
 		}
 	}
 
 	private void Start()
 	{
+		if (gameOverPanel != null)
+		{
+			gameOverPanel.SetActive(false);
+		}
+
 		if (waves.Count > 0)
 		{
 			StartWave(0);
@@ -121,7 +97,6 @@ public class GameManager : MonoBehaviour
 			if (currentWaveTimeRemaining > 0f)
 			{
 				currentWaveTimeRemaining -= Time.deltaTime;
-				currentWaveElapsedTime += Time.deltaTime;
 
 				int minutes = Mathf.FloorToInt(currentWaveTimeRemaining / 60f);
 				int seconds = Mathf.FloorToInt(currentWaveTimeRemaining % 60f);
@@ -130,17 +105,10 @@ public class GameManager : MonoBehaviour
 				{
 					countdownTimer.text = string.Format("{0:00}:{1:00}", minutes, seconds);
 				}
-
-				while (pendingSpawns.Count > 0 && currentWaveElapsedTime >= pendingSpawns[0].spawnTime)
-				{
-					SpawnResource(pendingSpawns[0].port);
-					pendingSpawns.RemoveAt(0);
-				}
 			} else
 			{
 				currentWaveTimeRemaining = 0f;
 				waveLasting = false;
-				waveEnded = true;
 				OnWaveComplete();
 			}
 		}
@@ -148,66 +116,132 @@ public class GameManager : MonoBehaviour
 
 	public void StartWave(int index)
 	{
+		if (index < 0 || index >= waves.Count) return;
+
+		currentWaveIndex = index;
+		currentWaveTimeRemaining = waves[index].totalTime;
+		currentWaveGold = 0;
+		waveLasting = true;
+
 		if (waveNumberCounter != null)
 		{
 			waveNumberCounter.text = waves[index].waveNumber.ToString();
 		}
 
-		if (index >= 0 && index < waves.Count)
+		UpdateGoalUI();
+
+		List<Port> activePorts = new List<Port>();
+		foreach (Port port in ports)
 		{
-			currentWaveIndex = index;
-			currentWaveTimeRemaining = waves[index].totalTime;
-			currentWaveElapsedTime = 0f;
-
-			pendingSpawns.Clear();
-
-			foreach (Resource res in waves[index].resources)
+			if (port != null)
 			{
-				if (res.spawnPort != null && res.spawnTime <= waves[index].totalTime && res.spawnTime >= 0)
-				{
-					pendingSpawns.Add(new PendingSpawn { port = res.spawnPort, spawnTime = res.spawnTime });
-				}
+				activePorts.Add(port);
 			}
+		}
 
-			pendingSpawns.Sort((a, b) => a.spawnTime.CompareTo(b.spawnTime));
+		if (randomizeStartOrder)
+		{
+			for (int i = activePorts.Count - 1; i > 0; i--)
+			{
+				int randomIndex = UnityEngine.Random.Range(0, i + 1);
+				(activePorts[i], activePorts[randomIndex]) = (activePorts[randomIndex], activePorts[i]);
+			}
+		}
 
-			waveStarted = true;
-			waveLasting = true;
-			waveEnded = false;
+		for (int i = 0; i < activePorts.Count; i++)
+		{
+			float delay = firstBoatDelay + (i * initialStaggerDelay);
+			activePorts[i].StartWaveSpawning(delay);
+		}
 
-			Debug.Log($"Started: {waves[index].waveName} for {waves[index].totalTime} seconds.");
+		Debug.Log($"Started: {waves[index].waveName} | Cel: {waves[index].requiredGold}$");
+	}
+
+	public float GetNextSpawnDelay()
+	{
+		// TO ADD POWERUP MULTIPLIER
+		// float mult = UpgradesManager.Instance.GetSpawnDelayMultiplier();
+		float mult = 1f;
+
+		float minDelay = Mathf.Max(0f, baseMinSpawnDelay * mult);
+		float maxDelay = Mathf.Max(minDelay, baseMaxSpawnDelay * mult);
+
+		return UnityEngine.Random.Range(minDelay, maxDelay);
+	}
+
+	public void SpawnBoatAtPort(Port destination)
+	{
+		if (boatPrefab == null || destination.boatSpawnPoint == null)
+		{
+			Debug.LogWarning("Brak boatPrefab w GameManager lub boatSpawnPoint w porcie!");
+			return;
+		}
+
+		GameObject newBoat = Instantiate(boatPrefab, Vector3.zero, destination.transform.rotation, boatParent);
+		float x = destination.boatSpawnPoint.position.x;
+		float y = 0f;
+		float z = destination.boatSpawnPoint.position.z;
+		newBoat.transform.position = new Vector3(x, y, z);
+
+		BoatBehaviour boatBehaviour = newBoat.GetComponent<BoatBehaviour>();
+		if (boatBehaviour != null)
+		{
+			boatBehaviour.carriedResource = destination.producedResource;
+			boatBehaviour.originPort = destination;
 		}
 	}
 
-	public void SpawnResource(Port destination)
+	public void AddWaveEarnings(int amount)
 	{
-		if (boatPrefab != null)
-		{
-			GameObject newBoat = Instantiate(boatPrefab, Vector3.zero, destination.transform.rotation, boatParent);
-			//newBoat.gameObject.GetComponent<BoatBehaviour>().DisableRigidbody();
-			float x = destination.boatSpawnPoint.transform.position.x;
-			float y = 0;
-			float z = destination.boatSpawnPoint.transform.position.z;
-			newBoat.transform.position = new Vector3(x, y, z);
+		if (!waveLasting) return;
 
-			BoatBehaviour boatBehaviour = newBoat.GetComponent<BoatBehaviour>();
-			if (boatBehaviour != null)
+		currentWaveGold += amount;
+		UpdateGoalUI();
+	}
+
+	private void UpdateGoalUI()
+	{
+		if (goldGoalText != null && currentWaveIndex < waves.Count)
+		{
+			int goal = waves[currentWaveIndex].requiredGold;
+			goldGoalText.text = $"Cel: {currentWaveGold} / {goal}$";
+		}
+	}
+
+	private void StopAllPortsAndClearBoats()
+	{
+		foreach (Port port in ports)
+		{
+			if (port != null)
 			{
-				boatBehaviour.carriedResource = destination.producedResource;
-				boatBehaviour.originPort = destination;
+				port.StopWaveSpawning();
 			}
+		}
 
-			//newBoat.gameObject.GetComponent<BoatBehaviour>().EnableRigidbody();
-			Debug.Log($"[{currentWaveElapsedTime:F1}s] Spawning boat with {destination.producedResource} at Port: {destination.gameObject.name}!");
-		} else
+		if (boatParent != null)
 		{
-			Debug.LogWarning("Boat Prefab is not assigned in GameManager!");
+			for (int i = boatParent.childCount - 1; i >= 0; i--)
+			{
+				Destroy(boatParent.GetChild(i).gameObject);
+			}
 		}
 	}
 
 	private void OnWaveComplete()
 	{
-		Debug.Log($"Wave {waves[currentWaveIndex].waveName} completed!");
+		StopAllPortsAndClearBoats();
+
+		Wave finishedWave = waves[currentWaveIndex];
+
+		if (currentWaveGold < finishedWave.requiredGold)
+		{
+			Debug.Log($"PRZEGRANA! Zebrano {currentWaveGold}$ z wymaganych {finishedWave.requiredGold}$.");
+			if (countdownTimer != null) countdownTimer.text = "GAME OVER!";
+			if (gameOverPanel != null) gameOverPanel.SetActive(true);
+			return;
+		}
+
+		Debug.Log($"Wave {finishedWave.waveName} completed!");
 
 		int nextIndex = currentWaveIndex + 1;
 		if (nextIndex < waves.Count)
@@ -228,4 +262,10 @@ public class GameManager : MonoBehaviour
 			StartWave(nextIndex);
 		}
 	}
+
+	public void RestartGame()
+	{
+		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+	}
+
 }
