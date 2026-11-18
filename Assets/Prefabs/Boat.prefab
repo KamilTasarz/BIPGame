@@ -48,10 +48,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1427f83be5a3c946a3129c1ca01e56a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoatBehaviour
-  force: 5
-  minimalForce: 2
-  radius: 5
-  rotSpeed: 6.71
+  boatSpeed: 0.5
+  radius: 15
+  rotSpeed: 2
 --- !u!54 &3572369945372128318
 Rigidbody:
   m_ObjectHideFlags: 0

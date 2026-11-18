@@ -1,19 +1,16 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class BoatBehaviour : MonoBehaviour
 {
-    public float force = 15.0f;
-    public float minimalForce = 2.0f;
+    public float boatSpeed = 1.5f;
     public float radius = 5.0f;
     public float rotSpeed = 10.0f;
 
     private bool isInputActive = false;
-    private bool outOfRadius = false;
     private Vector3 lastPoint = Vector3.zero;
     private float sign = 1.0f;
 
-    private Vector3 constantForce = Vector3.zero;
     private Rigidbody rb;
 
     private void OnEnable()
@@ -35,41 +32,35 @@ public class BoatBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 finalForce = Vector3.zero;
+        rb.linearVelocity = boatSpeed * transform.forward;
+
+        if (!isInputActive)
+        {
+            rb.angularVelocity = Vector3.zero;
+            return;
+        }
 
         Vector3 flatBoatPos = new Vector3(transform.position.x, 0f, transform.position.z);
         Vector3 flatPointPos = new Vector3(lastPoint.x, 0f, lastPoint.z);
 
         float dist = Vector3.Distance(flatPointPos, flatBoatPos);
-        Vector3 direction = (flatPointPos - flatBoatPos).normalized;
 
-        if (isInputActive)
+        Vector3 toPoint = (flatPointPos - flatBoatPos).normalized;
+
+        if (dist < radius && dist > 0.2f)
         {
-            if (dist < radius)
-            {
-                outOfRadius = false;
-                finalForce = direction * force * ((radius - dist) / radius);
-                rb.AddForce(sign * finalForce, ForceMode.Force);
-            }
-            else
-            {
-                outOfRadius = true;
-            }
+
+            float crossY = Vector3.Cross(transform.forward, toPoint).y;
+            float sideSign = Mathf.Sign(crossY);
+
+            float repelSmooth = (sign < 0f) ? Mathf.Clamp01(Mathf.Abs(crossY) * 4f + Mathf.Max(0f, Vector3.Dot(transform.forward, toPoint))) : 1f;
+
+            float baseOmega = boatSpeed / dist;
+            rb.angularVelocity = new Vector3(0f, sideSign * rotSpeed * sign * repelSmooth * baseOmega, 0f);
         }
-        else if (constantForce != Vector3.zero)
+        else
         {
-            rb.AddForce(constantForce, ForceMode.Force);
-        }
-
-        if (rb.linearVelocity.magnitude > 0.1f)
-        {
-            Vector3 flatOurDir = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
-            Vector3 flatDestDir = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z).normalized;
-
-            if (flatDestDir != Vector3.zero)
-            {
-                transform.forward = Vector3.Slerp(flatOurDir, flatDestDir, rotSpeed * Time.fixedDeltaTime);
-            }
+            rb.angularVelocity = Vector3.zero;
         }
     }
 
@@ -78,28 +69,18 @@ public class BoatBehaviour : MonoBehaviour
         lastPoint = point;
         this.sign = sign;
         isInputActive = true;
-        constantForce = Vector3.zero;
     }
 
     public void ConstMovement()
     {
         isInputActive = false;
-
-        if (outOfRadius)
-        {
-            Vector3 flatBoatPos = new Vector3(transform.position.x, 0f, transform.position.z);
-            Vector3 flatPointPos = new Vector3(lastPoint.x, 0f, lastPoint.z);
-            Vector3 direction = (flatPointPos - flatBoatPos).normalized;
-
-            constantForce = direction * minimalForce * sign;
-        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("land"))
         {
-            constantForce = Vector3.zero;
+            // Destroy(gameObject);
         }
     }
 }

@@ -1002,6 +1002,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a9bea72dbabbf9c4e821b6655d43d493, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a9bea72dbabbf9c4e821b6655d43d493, type: 3}
       propertyPath: m_TagString
       value: land
       objectReference: {fileID: 0}
@@ -1103,7 +1107,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4148133833486520665, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0.14
       objectReference: {fileID: 0}
     - target: {fileID: 4148133833486520665, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1140,6 +1144,18 @@ PrefabInstance:
     - target: {fileID: 5462297602382168235, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
       propertyPath: radius
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5462297602382168235, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
+      propertyPath: rotSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5462297602382168235, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
+      propertyPath: boatSpeed
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5462297602382168235, guid: 63173dd93056b274c8c7a6dcb18172e9, type: 3}
+      propertyPath: minimalForce
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

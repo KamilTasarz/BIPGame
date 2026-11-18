@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1157308551781541664}
   - component: {fileID: 3235211338053983199}
   - component: {fileID: 1777962797004291758}
+  - component: {fileID: 2663974651545845141}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -52,19 +53,20 @@ MonoBehaviour:
     waveNumber: 1
     totalTime: 5
     resources:
-    - id: 1_COAL_001
-      type: 1
+    - id: 1_UNASSIGNED_001
       spawnTime: 50
-    - id: 1_COAL_002
-      type: 1
+      spawnPort: {fileID: 0}
+    - id: 1_UNASSIGNED_002
       spawnTime: 40
+      spawnPort: {fileID: 0}
   - waveName: Wave 2
     waveNumber: 2
     totalTime: 10
     resources:
-    - id: 2_FISH_001
-      type: 0
+    - id: 2_UNASSIGNED_001
       spawnTime: 0
+      spawnPort: {fileID: 0}
+  ports: []
 --- !u!114 &1777962797004291758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,3 +97,20 @@ MonoBehaviour:
   m_DefaultActionMap: OurMap
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &2663974651545845141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5217841958336176442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dff63d5b92ce324988ad505066d5670, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  visualWave: {fileID: 3544274309172098140, guid: ec752d7773d849045b3055e7d9f6779f, type: 3}
+  floorMask:
+    serializedVersion: 2
+    m_Bits: 64
+  rayDistance: 500
