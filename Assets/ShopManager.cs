@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class ShopManager : MonoBehaviour
 {
@@ -11,11 +12,16 @@ public class ShopManager : MonoBehaviour
 	public int playerGold = 100;
 	public TextMeshProUGUI moneyText;
 
-	[Header("Shop UI")]
+	[Header("Shop UI Panels")]
 	public GameObject shopPanel;
 	public GameObject notEnoughMoneyPanel;
+
+	[Header("Shop Slot Arrays (Assign 4 of each in Inspector)")]
 	public Button[] itemButtons;
-	public int[] itemPrices;
+	public TextMeshProUGUI[] nameTexts;
+	public TextMeshProUGUI[] valueTexts;
+	public TextMeshProUGUI[] tierTexts;
+	public TextMeshProUGUI[] costTexts;
 
 	void Awake()
 	{
@@ -26,7 +32,6 @@ public class ShopManager : MonoBehaviour
 	{
 		UpdateMoneyUI();
 
-		// Ensure UI panels are hidden when the game starts
 		if (notEnoughMoneyPanel != null)
 		{
 			notEnoughMoneyPanel.SetActive(false);
@@ -45,17 +50,67 @@ public class ShopManager : MonoBehaviour
 
 	public void BuyItem(int itemIndex)
 	{
-		int price = itemPrices[itemIndex];
+		List<Modifier> mods = UpgradesManager.Instance.modifiers;
+
+		// Failsafe if we click a button but there are no modifiers for that slot
+		if (itemIndex >= mods.Count) return;
+
+		Modifier mod = mods[itemIndex];
+
+		// Prevent buying if maxed out
+		if (mod.currentTier >= mod.tierCount - 1) return;
+
+		int price = mod.GetNextTierCost();
 
 		if (playerGold >= price)
 		{
 			ChangeMoney(-price);
-			itemButtons[itemIndex].interactable = false;
-			Debug.Log("Purchased item slot: " + itemIndex);
+			mod.UpgradeToNextTier();
+
+			Debug.Log($"Purchased upgrade: {mod.name} to Tier {mod.currentTier + 1}");
+			RefreshShopUI(); // Update UI immediately after purchase
 		} else
 		{
 			StopAllCoroutines();
 			StartCoroutine(ShowNotEnoughMoneyPopup());
+		}
+	}
+
+	// Maps the modifier data directly to your UI text arrays
+	private void RefreshShopUI()
+	{
+		List<Modifier> mods = UpgradesManager.Instance.modifiers;
+
+		for (int i = 0; i < itemButtons.Length; i++)
+		{
+			if (i < mods.Count)
+			{
+				Modifier mod = mods[i];
+				nameTexts[i].text = mod.name;
+
+				if (mod.currentTier < mod.tierCount - 1)
+				{
+					// Upgrade is available
+					int cost = mod.GetNextTierCost();
+					costTexts[i].text = "$" + cost;
+					tierTexts[i].text = $"Tier {mod.currentTier + 1}/{mod.tierCount}";
+					valueTexts[i].text = $"{mod.currentValue} -> {mod.tierValues[mod.currentTier + 1]}";
+
+					// Button is clickable only if the player has enough gold
+					itemButtons[i].interactable = (playerGold >= cost);
+				} else
+				{
+					// Max Tier Reached
+					costTexts[i].text = "MAX";
+					tierTexts[i].text = $"Tier {mod.tierCount}/{mod.tierCount}";
+					valueTexts[i].text = $"{mod.currentValue}";
+					itemButtons[i].interactable = false;
+				}
+			} else
+			{
+				// Hide unused slots if there are fewer than 4 modifiers
+				itemButtons[i].gameObject.SetActive(false);
+			}
 		}
 	}
 
@@ -75,15 +130,20 @@ public class ShopManager : MonoBehaviour
 		{
 			moneyText.text = "Gold : " + playerGold + "$";
 		}
-	}
 
-	// --- New Shop Flow Methods ---
+		// If shop is currently open, receiving money dynamically updates button interactability
+		if (shopPanel != null && shopPanel.activeInHierarchy)
+		{
+			RefreshShopUI();
+		}
+	}
 
 	public void OpenShop()
 	{
 		if (shopPanel != null)
 		{
 			shopPanel.SetActive(true);
+			RefreshShopUI(); // Populate values right as it opens
 		}
 	}
 
@@ -93,8 +153,6 @@ public class ShopManager : MonoBehaviour
 		{
 			shopPanel.SetActive(false);
 		}
-
-		// Tell the GameManager to proceed to the next wave after closing
 		GameManager.Instance.StartNextWave();
 	}
 }
