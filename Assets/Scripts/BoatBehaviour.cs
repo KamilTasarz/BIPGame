@@ -27,6 +27,7 @@ public class BoatBehaviour : MonoBehaviour
 
 	private void OnEnable()
 	{
+		print("cos");
 		PlayerController.OnPressedMouseButtons += ChangeMovement;
 		PlayerController.OnReleasedMouseButtons += ConstMovement;
 	}
@@ -96,28 +97,33 @@ public class BoatBehaviour : MonoBehaviour
 			// Destroy(gameObject); 
 		}
 
-		Port hitPort = collision.gameObject.GetComponent<Port>();
-		if (hitPort != null)
-		{
-			if (hitPort == originPort)
-			{
-				return;
-			}
-
-			if (hitPort.acceptedResources.Contains(carriedResource))
-			{
-				if (ShopManager.instance != null)
-				{
-					ShopManager.instance.ChangeMoney(rewardValue);
-				}
-
-				Debug.Log($"Sukces! Dostarczono {carriedResource} do portu {hitPort.gameObject.name}. Zarobiono {rewardValue} sztuk złota.");
-
-				Destroy(gameObject);
-			} else
-			{
-				Debug.Log($"Port {hitPort.gameObject.name} nie przyjmuje zasobu {carriedResource}!");
-			}
-		}
+		
 	}
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Port hitPort = other.GetComponent<Port>();
+        if (hitPort != null)
+        {
+            if (hitPort == originPort)
+            {
+                return;
+            }
+            if (hitPort.acceptedResources.Contains(carriedResource))
+            {
+                if (ShopManager.instance != null)
+                {
+                    ShopManager.instance.ChangeMoney(rewardValue);
+                }
+
+                Debug.Log($"Sukces! Dostarczono {carriedResource} do portu {hitPort.gameObject.name}. Zarobiono {rewardValue} sztuk złota.");
+
+                Destroy(gameObject);
+            }
+            else
+            {
+                Debug.Log($"Port {hitPort.gameObject.name} nie przyjmuje zasobu {carriedResource}!");
+            }
+        }
+    }
 }

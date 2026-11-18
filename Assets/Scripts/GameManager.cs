@@ -54,6 +54,7 @@ public class GameManager : MonoBehaviour
 
 	[Header("Prefabs")]
 	public GameObject boatPrefab;
+	public Transform boatParent;
 
 	[Header("Data")]
 	public List<Wave> waves = new List<Wave>();
@@ -182,10 +183,10 @@ public class GameManager : MonoBehaviour
 	{
 		if (boatPrefab != null)
 		{
-			GameObject newBoat = Instantiate(boatPrefab, destination.boatSpawnPoint.transform.localPosition, destination.transform.rotation, destination.transform);
+			GameObject newBoat = Instantiate(boatPrefab, Vector3.zero, destination.transform.rotation, boatParent);
 			//newBoat.gameObject.GetComponent<BoatBehaviour>().DisableRigidbody();
 			float x = destination.boatSpawnPoint.transform.position.x;
-			float y = 0.85f;
+			float y = 0;
 			float z = destination.boatSpawnPoint.transform.position.z;
 			newBoat.transform.position = new Vector3(x, y, z);
 
