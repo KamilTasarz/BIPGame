@@ -17,7 +17,7 @@ public class Resource
 {
 	public string id;
 	public float spawnTime;
-	public Port spawnPort; // In the Inspector, you drag/drop or click the circle to select an existing Port
+	public Port spawnPort;
 
 	public Resource() { }
 }
@@ -30,7 +30,6 @@ public class Wave
 	public int waveNumber;
 	public float totalTime;
 
-	// The wave now directly controls what spawns and when
 	public List<Resource> resources = new List<Resource>();
 }
 
@@ -54,8 +53,6 @@ public class GameManager : MonoBehaviour
 	public TextMeshProUGUI countdownTimer;
 
 	public List<Wave> waves = new List<Wave>();
-
-	// You can still keep a list of all ports here if needed for other logic
 	public List<Port> ports = new List<Port>();
 
 	private List<PendingSpawn> pendingSpawns = new List<PendingSpawn>();
@@ -93,7 +90,6 @@ public class GameManager : MonoBehaviour
 			{
 				Resource res = currentWave.resources[r];
 
-				// Dynamically read the resource type from the assigned port, fallback if unassigned
 				string typeString = res.spawnPort != null ? res.spawnPort.producedResource.ToString() : "UNASSIGNED";
 				string generatedId = $"{currentWave.waveNumber}_{typeString}_{(r + 1):D3}";
 
@@ -161,10 +157,8 @@ public class GameManager : MonoBehaviour
 
 			pendingSpawns.Clear();
 
-			// Simplified queue logic: Loop through the wave's own resource list
 			foreach (Resource res in waves[index].resources)
 			{
-				// Only queue if a port is assigned and the time fits within the wave
 				if (res.spawnPort != null && res.spawnTime <= waves[index].totalTime && res.spawnTime >= 0)
 				{
 					pendingSpawns.Add(new PendingSpawn { port = res.spawnPort, spawnTime = res.spawnTime });
@@ -183,7 +177,6 @@ public class GameManager : MonoBehaviour
 
 	public void SpawnResource(Port destination)
 	{
-		// Reads the type dynamically from the Port MonoBehaviour
 		Debug.Log($"[{currentWaveElapsedTime:F1}s] Spawning {destination.producedResource} at Port: {destination.gameObject.name}!");
 	}
 
@@ -194,11 +187,22 @@ public class GameManager : MonoBehaviour
 		int nextIndex = currentWaveIndex + 1;
 		if (nextIndex < waves.Count)
 		{
-			StartWave(nextIndex);
+			// Open the shop instead of immediately calling StartWave()
+			ShopManager.instance.OpenShop();
 		} else
 		{
 			Debug.Log("All waves finished!");
 			if (countdownTimer != null) countdownTimer.text = "VICTORY!";
+		}
+	}
+
+	// Called by ShopManager.CloseShop() when the player exits the shop
+	public void StartNextWave()
+	{
+		int nextIndex = currentWaveIndex + 1;
+		if (nextIndex < waves.Count)
+		{
+			StartWave(nextIndex);
 		}
 	}
 }
