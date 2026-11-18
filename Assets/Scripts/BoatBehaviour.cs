@@ -55,7 +55,10 @@ public class BoatBehaviour : MonoBehaviour
 
             float repelSmooth = (sign < 0f) ? Mathf.Clamp01(Mathf.Abs(crossY) * 4f + Mathf.Max(0f, Vector3.Dot(transform.forward, toPoint))) : 1f;
 
-            float baseOmega = boatSpeed / dist;
+            float baseOmega = rb.linearVelocity.magnitude / dist;
+
+            baseOmega = (dist < 1.0f) ? baseOmega * (1.0f + dist / radius) : baseOmega;
+
             rb.angularVelocity = new Vector3(0f, sideSign * rotSpeed * sign * repelSmooth * baseOmega, 0f);
         }
         else
