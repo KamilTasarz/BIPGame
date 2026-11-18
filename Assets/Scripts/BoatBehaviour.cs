@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEngine.Rendering.HableCurve;
 
 [RequireComponent(typeof(Rigidbody))]
 public class BoatBehaviour : MonoBehaviour
@@ -7,12 +9,13 @@ public class BoatBehaviour : MonoBehaviour
     public float radius = 5.0f;
     public float rotSpeed = 10.0f;
 
+
     private bool isInputActive = false;
     private Vector3 lastPoint = Vector3.zero;
     private float sign = 1.0f;
 
     private Rigidbody rb;
-
+    
     private void OnEnable()
     {
         PlayerController.OnPressedMouseButtons += ChangeMovement;
@@ -55,11 +58,13 @@ public class BoatBehaviour : MonoBehaviour
 
             float repelSmooth = (sign < 0f) ? Mathf.Clamp01(Mathf.Abs(crossY) * 4f + Mathf.Max(0f, Vector3.Dot(transform.forward, toPoint))) : 1f;
 
-            float baseOmega = rb.linearVelocity.magnitude / dist;
+            float baseOmega = boatSpeed / radius;//rb.linearVelocity.magnitude / dist;
 
-            baseOmega = (dist < 1.0f) ? baseOmega * (1.0f + dist / radius) : baseOmega;
+            //baseOmega = (dist < 1.0f) ? baseOmega * (1.0f + 2.0f * dist / radius) : baseOmega;
 
-            rb.angularVelocity = new Vector3(0f, sideSign * rotSpeed * sign * repelSmooth * baseOmega, 0f);
+            transform.Rotate(0, baseOmega * sideSign * rotSpeed * sign * repelSmooth, 0);
+
+            //rb.angularVelocity = new Vector3(0f, sideSign * rotSpeed * sign * repelSmooth * baseOmega, 0f);
         }
         else
         {
@@ -86,4 +91,8 @@ public class BoatBehaviour : MonoBehaviour
             // Destroy(gameObject);
         }
     }
+
+    
+    
+
 }

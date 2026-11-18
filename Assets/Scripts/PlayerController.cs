@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,12 +17,21 @@ public class PlayerController : MonoBehaviour
     private Camera mainCam;
     private Transform waveObj;
 
+
+    [Header("Line")]
+    public int circleSegments = 20;
+    public float radius = 1.0f;
+
+    private float currentT = 0.0f;
+
+    private LineRenderer line;
     private void Start()
     {
         PlayerInput pi = GetComponent<PlayerInput>();
         pushAction = pi.actions["pushAction"];
         pullAction = pi.actions["pullAction"];
         mainCam = Camera.main;
+        line = GetComponent<LineRenderer>();
     }
 
     private void Update()
@@ -32,6 +42,8 @@ public class PlayerController : MonoBehaviour
         if (isPushing || isPulling)
         {
             Ray ray = mainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+            if (waveObj) DrawCircle();
 
             if (Physics.Raycast(ray, out RaycastHit output, rayDistance, floorMask))
             {
@@ -53,10 +65,33 @@ public class PlayerController : MonoBehaviour
             if (waveObj != null)
             {
                 Destroy(waveObj.gameObject);
+                line.enabled = false;
                 waveObj = null;
             }
 
             OnReleasedMouseButtons?.Invoke();
         }
     }
+
+    private void DrawCircle(bool outside = true)
+    {
+        line.enabled = true;
+        line.positionCount = circleSegments + 1;
+        float angleStep = 2f * Mathf.PI / circleSegments;
+
+        for (int i = 0; i < circleSegments; i++)
+        {
+            float angle = i * angleStep;
+            float x = waveObj.position.x + Mathf.Cos(angle) * radius;
+            float y = waveObj.position.z + Mathf.Sin(angle) * radius;
+
+            line.SetPosition(i, new Vector3(x, 0.1f, y));
+
+        }
+
+        line.SetPosition(circleSegments, new Vector3(waveObj.position.x + radius, 0.1f, waveObj.position.z));
+
+    }
+
+    
 }
