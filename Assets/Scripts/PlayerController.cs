@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
 
             if (Physics.Raycast(ray, out RaycastHit output, rayDistance, floorMask))
             {
-                print(output.collider.gameObject.tag);
+                //print(output.collider.gameObject.tag);
                 if (output.collider.gameObject.CompareTag("land")) {
                     
                     if (waveObj) {
@@ -66,10 +66,19 @@ public class PlayerController : MonoBehaviour
                 }
 
                 float sign = isPulling ? 1.0f : -1.0f;
+                var ps = waveObj.GetComponentInChildren<ParticleSystem>();
+                var vel = ps.velocityOverLifetime;
+
+                var orbitalZ = vel.orbitalZ;
+                orbitalZ.constant = isPulling ? 8.0f : -8.0f; 
+                vel.orbitalZ = orbitalZ;
+
+
+
                 OnPressedMouseButtons?.Invoke(output.point, sign);
             }
 
-            if (waveObj) DrawCircle();
+            //if (waveObj) DrawCircle();
         }
         else if (pushAction.WasReleasedThisFrame() || pullAction.WasReleasedThisFrame())
         {
