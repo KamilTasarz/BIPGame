@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 public class BoatBehaviour : MonoBehaviour
@@ -16,9 +18,11 @@ public class BoatBehaviour : MonoBehaviour
 	private float sign = 1.0f;
 
 	[Header("Resource Cargo")]
-	public ResourceType carriedResource;
-	public int rewardValue = 25;
+	public List<ResourceType> carriedResources = new List<ResourceType>();
 	public Port originPort;
+
+	[Header("Cargo UI Icons")]
+	public Image[] cargoIcons;
 
 	private Rigidbody rb;
 
@@ -40,6 +44,31 @@ public class BoatBehaviour : MonoBehaviour
 	private void Awake()
 	{
 		rb = GetComponent<Rigidbody>();
+	}
+
+	public void SetCargo(List<ResourceType> resources)
+	{
+		carriedResources = resources;
+		UpdateCargoUI();
+	}
+
+	private void UpdateCargoUI()
+	{
+		if (cargoIcons == null || GameManager.Instance == null) return;
+
+		for (int i = 0; i < cargoIcons.Length; i++)
+		{
+			if (cargoIcons[i] == null) continue;
+
+			if (i < carriedResources.Count)
+			{
+				cargoIcons[i].sprite = GameManager.Instance.GetResourceIcon(carriedResources[i]);
+				cargoIcons[i].gameObject.SetActive(cargoIcons[i].sprite != null);
+			} else
+			{
+				cargoIcons[i].gameObject.SetActive(false);
+			}
+		}
 	}
 
 	private void FixedUpdate()
@@ -105,7 +134,7 @@ public class BoatBehaviour : MonoBehaviour
 	{
 		if (collision.gameObject.CompareTag("land"))
 		{
-			Destroy(gameObject); 
+			Destroy(gameObject);
 		}
 		if (collision.gameObject.CompareTag("pirate"))
 		{
@@ -127,24 +156,12 @@ public class BoatBehaviour : MonoBehaviour
 			{
 				return;
 			}
-			if (hitPort.acceptedResources.Contains(carriedResource))
-			{
-				if (ShopManager.instance != null)
-				{
-					ShopManager.instance.ChangeMoney(rewardValue);
-				}
 
-				if (GameManager.Instance != null)
-				{
-					GameManager.Instance.AddWaveEarnings(rewardValue);
-				}
+			int baseReward = hitPort.CalculateCargoValue(carriedResources);
+			int finalReward = GameManager.Instance != null ? GameManager.Instance.AddWaveEarnings(baseReward) : baseReward;
 
-				Debug.Log($"Sukces! Dostarczono {carriedResource} do portu {hitPort.gameObject.name}. Zarobiono {rewardValue} sztuk złota.");
-				Destroy(gameObject);
-			} else
-			{
-				Debug.Log($"Port {hitPort.gameObject.name} nie przyjmuje zasobu {carriedResource}!");
-			}
+			Debug.Log($"Sprzedano [{string.Join(", ", carriedResources)}] w porcie {hitPort.gameObject.name}. Zarobiono {finalReward}$ (baza: {baseReward}$).");
+			Destroy(gameObject);
 		}
 	}
 }
