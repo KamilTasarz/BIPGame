@@ -73,10 +73,11 @@ public class UpgradesManager : MonoBehaviour
 			float[] tier2 = { 1.0f, 1.2f, 1.5f, 1.6f, 1.8f, 2.0f };
 			float[] tier3 = { 1.0f, 2.0f, 3.0f};
 			float[] tier4 = { 1.0f, 0.95f, 0.9f, 0.8f, 0.7f, 0.6f, 0.5f, 0.3f, 0.1f, 0.01f };
-			modifiers.Add(new Modifier("money_mult", 10, tier1, 25));
-			modifiers.Add(new Modifier("vortex_pull", 6, tier2, 25));
-			modifiers.Add(new Modifier("hull_str", 3, tier3, 25));
-			modifiers.Add(new Modifier("ship_spawn_rate", 10, tier4, 25));
+
+			modifiers.Add(new Modifier("Money multiplier", 10, tier1, 25));
+			modifiers.Add(new Modifier("Vortex strength", 6, tier2, 25));
+			modifiers.Add(new Modifier("Ship durability", 3, tier3, 25));
+			modifiers.Add(new Modifier("Ship spawn rate", 10, tier4, 25));
 
 		}
 		else

@@ -105,7 +105,8 @@ public class ShopManager : MonoBehaviour
 					// Upgrade is available
 					int cost = mod.GetNextTierCost();
 					costTexts[i].text = "$" + cost;
-					tierTexts[i].text = $"Tier {mod.currentTier + 1}/{mod.tierCount}";
+					costTexts[i].color = (playerGold >= cost)? Color.green : Color.red;
+					tierTexts[i].text = $"Level {mod.currentTier + 1}/{mod.tierCount}";
 					valueTexts[i].text = $"{mod.currentValue} -> {mod.tierValues[mod.currentTier + 1]}";
 
 					// Button is clickable only if the player has enough gold
