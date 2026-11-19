@@ -15,6 +15,8 @@ public class BoatBehaviour : MonoBehaviour
     public GameObject ps;
     public float timeToRotate = 0.5f;
     public float timeToSink = 1.5f;
+    [Header("Deliver properties")]
+    public GameObject ps1;
 
     [HideInInspector] public float healthPoints = 1.1f;
 
@@ -55,7 +57,13 @@ public class BoatBehaviour : MonoBehaviour
 		rb = GetComponent<Rigidbody>();
 	}
 
-	public void SetCargo(List<ResourceType> resources)
+    private void Start()
+    {
+		StartAnimation();
+		
+	}
+
+    public void SetCargo(List<ResourceType> resources)
 	{
 		carriedResources = resources;
 		UpdateCargoUI();
@@ -94,6 +102,7 @@ public class BoatBehaviour : MonoBehaviour
 			if (isInputActive && dist < radius && dist > 0.2f)
 			{
 				isLaunched = true;
+				TurnCanvases(true);
 				if (originPort != null)
 				{
 					originPort.OnBoatDeparted();
@@ -154,6 +163,7 @@ public class BoatBehaviour : MonoBehaviour
         }
 		if (collision.gameObject.CompareTag("pirate"))
 		{
+			isAnimation = true;
 			FightAnimation(collision.transform.position);
 			
 		}
@@ -186,7 +196,7 @@ public class BoatBehaviour : MonoBehaviour
 			hitPort.RollNewDemand();
 
 			Debug.Log($"Sprzedano [{string.Join(", ", carriedResources)}] w porcie {hitPort.gameObject.name}. Zarobiono {finalReward}$ (baza: {baseReward}$).");
-			Destroy(gameObject);
+			DeliverAnimation(other.transform.position);
 		}
 	}
 
@@ -220,6 +230,7 @@ public class BoatBehaviour : MonoBehaviour
 		{
 			rb.isKinematic = false;
             healthPoints -= 1.0f;
+			isAnimation = false;
 			TurnCanvases(true);
             if (healthPoints <= 0.0f)
             {
@@ -234,14 +245,50 @@ public class BoatBehaviour : MonoBehaviour
         });
 	}
 
+	private void StartAnimation()
+	{
+		isAnimation = true;
+		TurnCanvases(false);
+		rb.isKinematic = true;
+		transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+		//transform.position.Set(transform.position.x, 0.2f, transform.position.z);
+		transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
+		{
+			isAnimation = false;
+            rb.isKinematic = false;
+
+        });
+	}
+	private void DeliverAnimation(Vector3 portPos)
+	{
+		
+		isAnimation = true;
+
+		//GameObject g = Instantiate(ps1, transform);
+		//Vector3 dir = portPos - transform.position;
+		//dir.Normalize();
+		//g.transform.forward = dir;
+
+		//transform.DOMove(transform.position, 1.0f).OnComplete(() =>
+		//{
+			//transform.localScale = Vector3.zero;
+			transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
+			{
+				isAnimation = false;
+				Destroy(gameObject);
+			});
+		//});
+	}
+
 	private void TurnCanvases(bool on = true)
 	{
         for (int i = 0; i < cargoIcons.Length; i++)
         {
             if (cargoIcons[i] == null) continue;
+            cargoIcons[i].gameObject.SetActive(true);
 
-            cargoIcons[i].gameObject.SetActive(on);
-
+			cargoIcons[i].DOFade((on ? 1.0f : 0.0f), 0.5f);
+			cargoIcons[i].transform.DOScale((on ? 0.08f : 0.0f), 0.5f);
         }
     }
 }

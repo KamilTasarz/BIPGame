@@ -159,6 +159,7 @@ public class PirateBehaviour : MonoBehaviour
 
         if (collision.gameObject.CompareTag("boat"))
         {
+            isAnimation = true;
             FightAnimation();
         }
     }
@@ -187,7 +188,8 @@ public class PirateBehaviour : MonoBehaviour
         rb.isKinematic = true;
         transform.DOMove(transform.position, 1.5f).OnComplete(() =>
         {
-            rb.isKinematic = false;            
+            rb.isKinematic = false;
+            isAnimation = false;
         });
     }
 }
