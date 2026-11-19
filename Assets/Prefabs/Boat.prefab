@@ -52,9 +52,13 @@ MonoBehaviour:
   boatSpeed: 0.8
   radius: 1
   rotSpeed: 1.6
-  carriedResource: 0
-  rewardValue: 25
+  ps: {fileID: 6034045477899840880, guid: edcefac235f32164292ea3e87298615a, type: 3}
+  timeToRotate: 0.5
+  timeToSink: 1.5
+  healthPoints: 2
+  carriedResources: 
   originPort: {fileID: 0}
+  cargoIcons: []
 --- !u!54 &3572369945372128318
 Rigidbody:
   m_ObjectHideFlags: 0
