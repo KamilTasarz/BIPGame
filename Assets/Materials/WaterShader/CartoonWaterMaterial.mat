@@ -71,11 +71,11 @@ Material:
     - _DepthFadeDistance: 0.2
     - _FoamBlend: 0.56
     - _FoamTextureSamplingStep: 0.52
-    - _LightingHardness: 0.23
-    - _LightingSmoothness: 0.14
-    - _NormalsScale: 0.3
+    - _LightingHardness: 0.58
+    - _LightingSmoothness: 0.53
+    - _NormalsScale: 2
     - _NormalsSpeed: 0.05
-    - _NormalsStrength: 2.34
+    - _NormalsStrength: 0.5
     - _PosterizingSteps: 65.21
     - _PosterizingStpes: 100
     - _QueueControl: 0

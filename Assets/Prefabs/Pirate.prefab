@@ -101,6 +101,9 @@ MonoBehaviour:
   radius: 1
   rotSpeed: 1.4
   howOftenCheckBoats: 3
+  ps: {fileID: 6034045477899840880, guid: edcefac235f32164292ea3e87298615a, type: 3}
+  timeToRotate: 0.5
+  timeToSink: 3
   targetBoat: {fileID: 0}
 --- !u!1001 &1434910984392008692
 PrefabInstance:

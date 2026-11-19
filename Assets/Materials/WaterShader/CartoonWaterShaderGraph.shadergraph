@@ -470,6 +470,20 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
+                    "m_Id": "26d3db68db7f4014a993550f40db0771"
+                },
+                "m_SlotId": 5
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "cc811b0d7f934f8ba049c2bc3a8f19b6"
+                },
+                "m_SlotId": 1
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
                     "m_Id": "297503cd15044d39bf3a6d78f1b8b67b"
                 },
                 "m_SlotId": 1
@@ -1191,6 +1205,20 @@
             "m_InputSlot": {
                 "m_Node": {
                     "m_Id": "26d3db68db7f4014a993550f40db0771"
+                },
+                "m_SlotId": 0
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "d6358a5c144d4715acb9ad5416eb8f61"
+                },
+                "m_SlotId": 1
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "c57ebb6947d4469d822de38e0aa4fa8e"
                 },
                 "m_SlotId": 0
             }
@@ -3549,8 +3577,8 @@
     "m_ObjectId": "4b31e6cfdf404a54a19f068ec9fe118b",
     "m_Title": "Foam Section",
     "m_Position": {
-        "x": -659.2000122070313,
-        "y": -2041.599853515625
+        "x": -659.2000732421875,
+        "y": -2041.5999755859375
     }
 }
 
@@ -4702,7 +4730,7 @@
     "m_Title": "Depth Section",
     "m_Position": {
         "x": -1471.2001953125,
-        "y": -2616.799560546875
+        "y": -2616.7998046875
     }
 }
 

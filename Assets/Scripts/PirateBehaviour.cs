@@ -1,5 +1,6 @@
-﻿using UnityEngine;
-using UnityEngine.AI;
+﻿using DG.Tweening;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PirateBehaviour : MonoBehaviour
 {
@@ -8,6 +9,11 @@ public class PirateBehaviour : MonoBehaviour
     public float radius = 1.0f;
     public float rotSpeed = 10.0f;
     public float howOftenCheckBoats = 5.0f;
+
+    [Header("Destroy properties")]
+    public GameObject ps;
+    public float timeToRotate = 0.5f;
+    public float timeToSink = 1.5f;
 
     private bool isInputActive = false;
     private bool isLaunched = false;
@@ -19,6 +25,8 @@ public class PirateBehaviour : MonoBehaviour
 
     private Rigidbody rb;
     public BoatBehaviour targetBoat = null;
+
+    private bool isDead = false;
 
     private void OnEnable()
     {
@@ -44,6 +52,7 @@ public class PirateBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (isDead) return;
         if (timerToCheckBoats <= 0.0f)
         {
             FindClosestBoat();
@@ -137,11 +146,26 @@ public class PirateBehaviour : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("land"))
         {
-            Destroy(gameObject);
+            isDead = true;
+            GameObject o = Instantiate(ps, Vector3.zero, Quaternion.identity, transform);
+            o.transform.localPosition = Vector3.zero;
+            transform.DORotate(new Vector3(-50f, 0f, 0f), timeToRotate).SetRelative(true).SetEase(Ease.InOutSine).OnComplete(() =>
+            {
+                float y_off = 2.0f;
+                float z_off = 2.0f;
+                Vector3 sinkDirection = (-Vector3.up * y_off) + (-transform.forward * z_off);
+                Vector3 targetPosition = transform.position + sinkDirection;
+
+                transform.DOMove(targetPosition, timeToSink).SetEase(Ease.Linear).OnComplete(() =>
+                {
+                    Destroy(gameObject);
+                });
+            });
         }
 
         if (collision.gameObject.CompareTag("pirate"))
         {
+            isDead = true;
             Destroy(gameObject);
         }
     }
