@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7960605879248491485}
   - component: {fileID: 2350152137551273902}
   - component: {fileID: 4502452768877325932}
+  - component: {fileID: 483607830214129186}
   m_Layer: 0
   m_Name: Pirate
   m_TagString: Untagged
@@ -84,6 +85,23 @@ CapsuleCollider:
   m_Height: 0.48
   m_Direction: 2
   m_Center: {x: 0, y: 0.1, z: 0}
+--- !u!114 &483607830214129186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8148507587147955016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1e9218297340de49b2e7e04d04685c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PirateBehaviour
+  boatSpeed: 1.2
+  radius: 1
+  rotSpeed: 1.4
+  howOftenCheckBoats: 3
+  targetBoat: {fileID: 0}
 --- !u!1001 &1434910984392008692
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -8,6 +8,8 @@ public class BoatBehaviour : MonoBehaviour
 	public float radius = 5.0f;
 	public float rotSpeed = 10.0f;
 
+	[HideInInspector] public int healthPoints = 2;
+
 	private bool isInputActive = false;
 	private bool isLaunched = false;
 	private Vector3 lastPoint = Vector3.zero;
@@ -104,6 +106,15 @@ public class BoatBehaviour : MonoBehaviour
 		if (collision.gameObject.CompareTag("land"))
 		{
 			Destroy(gameObject); 
+		}
+		if (collision.gameObject.CompareTag("pirate"))
+		{
+			healthPoints--;
+			rb.AddForce(boatSpeed * transform.forward);
+			if (healthPoints <= 0)
+			{
+				Destroy(gameObject);
+			}
 		}
 	}
 
