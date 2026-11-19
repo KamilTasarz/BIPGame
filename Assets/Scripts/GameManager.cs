@@ -7,8 +7,11 @@ using UnityEngine.SceneManagement;
 [Serializable]
 public enum ResourceType
 {
-	FISH,
-	COAL,
+	GRAIN,
+	TIMBER,
+	TAR,
+	IRON,
+	FLAX,
 	AMBER
 }
 
@@ -159,9 +162,7 @@ public class GameManager : MonoBehaviour
 
 	public float GetNextSpawnDelay()
 	{
-		// TO ADD POWERUP MULTIPLIER
-		// float mult = UpgradesManager.Instance.GetSpawnDelayMultiplier();
-		float mult = 1f;
+		float mult = UpgradesManager.Instance.ProvideCurrentModifierValue(UpgradesManager.Instance.modifiers[3]);
 
 		float minDelay = Mathf.Max(0f, baseMinSpawnDelay * mult);
 		float maxDelay = Mathf.Max(minDelay, baseMaxSpawnDelay * mult);
@@ -195,7 +196,10 @@ public class GameManager : MonoBehaviour
 	{
 		if (!waveLasting) return;
 
-		currentWaveGold += amount;
+		float mult = UpgradesManager.Instance.ProvideCurrentModifierValue(UpgradesManager.Instance.modifiers[0]); 
+		int earnings = ((int)(amount * mult));
+
+		currentWaveGold += earnings;
 		UpdateGoalUI();
 	}
 
