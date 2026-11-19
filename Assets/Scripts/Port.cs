@@ -6,13 +6,11 @@ public class Port : MonoBehaviour
 {
 	[Header("Production & Demand")]
 	public ResourceType producedResource;
-	public ResourceType mainDesiredResource;
-	public List<ResourceType> secondaryDesiredResources = new List<ResourceType>();
+	public List<ResourceType> desiredResources = new List<ResourceType>();
 	public Transform boatSpawnPoint;
 
-	[Header("Demand UI Icons")]
-	public Image mainDesiredIcon;
-	public Image[] secondaryDesiredIcons;
+	[Header("Demand UI Icons (Przypisz 2 ikonki)")]
+	public Image[] desiredIcons;
 
 	private bool isSpawningActive = false;
 	private bool hasWaitingBoat = false;
@@ -20,7 +18,7 @@ public class Port : MonoBehaviour
 
 	private void Start()
 	{
-		UpdateDemandUI();
+		RollNewDemand();
 	}
 
 	private void Update()
@@ -34,29 +32,48 @@ public class Port : MonoBehaviour
 		}
 	}
 
-	public void UpdateDemandUI()
+	public void RollNewDemand()
 	{
-		if (GameManager.Instance == null) return;
+		desiredResources.Clear();
 
-		if (mainDesiredIcon != null)
+		ResourceType[] allTypes = (ResourceType[])System.Enum.GetValues(typeof(ResourceType));
+		List<ResourceType> pool = new List<ResourceType>();
+
+		foreach (ResourceType type in allTypes)
 		{
-			mainDesiredIcon.sprite = GameManager.Instance.GetResourceIcon(mainDesiredResource);
-			mainDesiredIcon.enabled = mainDesiredIcon.sprite != null;
+			// Port nie losuje jako zapotrzebowania tego, co sam produkuje
+			if (type != producedResource)
+			{
+				pool.Add(type);
+			}
 		}
 
-		if (secondaryDesiredIcons == null) return;
-
-		for (int i = 0; i < secondaryDesiredIcons.Length; i++)
+		int count = Mathf.Min(2, pool.Count);
+		for (int i = 0; i < count; i++)
 		{
-			if (secondaryDesiredIcons[i] == null) continue;
+			int randomIndex = Random.Range(0, pool.Count);
+			desiredResources.Add(pool[randomIndex]);
+			pool.RemoveAt(randomIndex);
+		}
 
-			if (i < secondaryDesiredResources.Count)
+		UpdateDemandUI();
+	}
+
+	public void UpdateDemandUI()
+	{
+		if (GameManager.Instance == null || desiredIcons == null) return;
+
+		for (int i = 0; i < desiredIcons.Length; i++)
+		{
+			if (desiredIcons[i] == null) continue;
+
+			if (i < desiredResources.Count)
 			{
-				secondaryDesiredIcons[i].sprite = GameManager.Instance.GetResourceIcon(secondaryDesiredResources[i]);
-				secondaryDesiredIcons[i].gameObject.SetActive(secondaryDesiredIcons[i].sprite != null);
+				desiredIcons[i].sprite = GameManager.Instance.GetResourceIcon(desiredResources[i]);
+				desiredIcons[i].gameObject.SetActive(desiredIcons[i].sprite != null);
 			} else
 			{
-				secondaryDesiredIcons[i].gameObject.SetActive(false);
+				desiredIcons[i].gameObject.SetActive(false);
 			}
 		}
 	}
@@ -68,20 +85,9 @@ public class Port : MonoBehaviour
 		foreach (ResourceType resource in cargo)
 		{
 			int basePrice = GameManager.Instance.GetResourceBasePrice(resource);
-			float rate;
+			int multiplier = desiredResources.Contains(resource) ? 2 : 1;
 
-			if (resource == mainDesiredResource)
-			{
-				rate = 1.0f;
-			} else if (secondaryDesiredResources.Contains(resource))
-			{
-				rate = 0.5f;
-			} else
-			{
-				rate = 0.1f;
-			}
-
-			totalValue += Mathf.Max(1, Mathf.RoundToInt(basePrice * rate));
+			totalValue += basePrice * multiplier;
 		}
 
 		return totalValue;

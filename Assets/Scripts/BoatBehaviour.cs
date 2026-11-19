@@ -197,6 +197,8 @@ public class BoatBehaviour : MonoBehaviour
 			int baseReward = hitPort.CalculateCargoValue(carriedResources);
 			int finalReward = GameManager.Instance != null ? GameManager.Instance.AddWaveEarnings(baseReward) : baseReward;
 
+			hitPort.RollNewDemand();
+
 			Debug.Log($"Sprzedano [{string.Join(", ", carriedResources)}] w porcie {hitPort.gameObject.name}. Zarobiono {finalReward}$ (baza: {baseReward}$).");
 			Destroy(gameObject);
 		}
