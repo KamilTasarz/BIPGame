@@ -123,7 +123,10 @@ public class BoatBehaviour : MonoBehaviour
 			float repelSmooth = (sign < 0f) ? Mathf.Clamp01(Mathf.Abs(crossY) * 4f + Mathf.Max(0f, Vector3.Dot(transform.forward, toPoint))) : 1f;
 
 			float baseOmega = boatSpeed / radius;
-			transform.Rotate(0, baseOmega * sideSign * rotSpeed * sign * repelSmooth, 0);
+
+            float multi = UpgradesManager.Instance.ProvideCurrentModifierValue(UpgradesManager.Instance.modifiers[1]);
+
+            transform.Rotate(0, baseOmega * sideSign * rotSpeed * sign * repelSmooth * multi, 0);
 		} else
 		{
 			rb.angularVelocity = Vector3.zero;
@@ -189,6 +192,8 @@ public class BoatBehaviour : MonoBehaviour
 
     private void DeathAnimation()
     {
+
+        TurnCanvases(false);
         GameObject o = Instantiate(ps, Vector3.zero, Quaternion.identity, transform);
         o.transform.localPosition = Vector3.zero;
         transform.DORotate(new Vector3(-50f, 0f, 0f), timeToRotate).SetRelative(true).SetEase(Ease.InOutSine).OnComplete(() =>
@@ -208,10 +213,14 @@ public class BoatBehaviour : MonoBehaviour
 	private void FightAnimation(Vector3 pos)
 	{
 		rb.isKinematic = true;
-		transform.DOMove(transform.position, 1.5f).OnComplete(() =>
+
+		TurnCanvases(false);
+
+        transform.DOMove(transform.position, 1.5f).OnComplete(() =>
 		{
 			rb.isKinematic = false;
             healthPoints -= 1.0f;
+			TurnCanvases(true);
             if (healthPoints <= 0.0f)
             {
                 isDead = true;
@@ -224,4 +233,15 @@ public class BoatBehaviour : MonoBehaviour
             }
         });
 	}
+
+	private void TurnCanvases(bool on = true)
+	{
+        for (int i = 0; i < cargoIcons.Length; i++)
+        {
+            if (cargoIcons[i] == null) continue;
+
+            cargoIcons[i].gameObject.SetActive(on);
+
+        }
+    }
 }

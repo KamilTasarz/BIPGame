@@ -93,7 +93,10 @@ public class PirateBehaviour : MonoBehaviour
             float repelSmooth = (sign < 0f) ? Mathf.Clamp01(Mathf.Abs(crossY) * 4f + Mathf.Max(0f, Vector3.Dot(transform.forward, toPoint))) : 1f;
 
             float baseOmega = boatSpeed / radius;
-            transform.Rotate(0, baseOmega * sideSign * rotSpeed * sign * repelSmooth, 0);
+
+            float multi = UpgradesManager.Instance.ProvideCurrentModifierValue(UpgradesManager.Instance.modifiers[1]);
+
+            transform.Rotate(0, baseOmega * sideSign * rotSpeed * sign * repelSmooth * multi, 0);
 
         } else
         {
