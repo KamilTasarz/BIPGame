@@ -16,7 +16,7 @@ public class BoatBehaviour : MonoBehaviour
     public float timeToRotate = 0.5f;
     public float timeToSink = 1.5f;
 
-    [HideInInspector] public float healthPoints = 1;
+    [HideInInspector] public float healthPoints = 1.1f;
 
 	private bool isInputActive = false;
 	private bool isLaunched = false;
@@ -31,6 +31,7 @@ public class BoatBehaviour : MonoBehaviour
 	public Image[] cargoIcons;
 
 	private bool isDead = false;
+	private bool isAnimation = false;
 	private Rigidbody rb;
 
 	public void DisableRigidbody() { rb.isKinematic = false; }
@@ -82,7 +83,9 @@ public class BoatBehaviour : MonoBehaviour
 	private void FixedUpdate()
 	{
 		if (isDead) return;
-		Vector3 flatBoatPos = new Vector3(transform.position.x, 0f, transform.position.z);
+        if (isAnimation) return;
+
+        Vector3 flatBoatPos = new Vector3(transform.position.x, 0f, transform.position.z);
 		Vector3 flatPointPos = new Vector3(lastPoint.x, 0f, lastPoint.z);
 		float dist = Vector3.Distance(flatPointPos, flatBoatPos);
 
@@ -144,45 +147,25 @@ public class BoatBehaviour : MonoBehaviour
 		if (collision.gameObject.CompareTag("land"))
 		{
             isDead = true;
-            GameObject o = Instantiate(ps, Vector3.zero, Quaternion.identity, transform);
-            o.transform.localPosition = Vector3.zero;
-            transform.DORotate(new Vector3(-50f, 0f, 0f), timeToRotate).SetRelative(true).SetEase(Ease.InOutSine).OnComplete(() =>
-            {
-                float y_off = 1.0f;
-                float z_off = 1.0f;
-                Vector3 sinkDirection = (-Vector3.up * y_off) + (-transform.forward * z_off);
-                Vector3 targetPosition = transform.position + sinkDirection;
-
-                transform.DOMove(targetPosition, timeToSink).SetEase(Ease.Linear).OnComplete(() =>
-                {
-                    Destroy(gameObject);
-                });
-            });
+			DeathAnimation();
         }
 		if (collision.gameObject.CompareTag("pirate"))
 		{
-			healthPoints -= 1.0f;
-			rb.AddForce(5.0f * boatSpeed * transform.forward);
-			if (healthPoints <= 0.0f)
-			{
-                isDead = true;
-                GameObject o = Instantiate(ps, Vector3.zero, Quaternion.identity, transform);
-                o.transform.localPosition = Vector3.zero;
-                transform.DORotate(new Vector3(-50f, 0f, 0f), timeToRotate).SetRelative(true).SetEase(Ease.InOutSine).OnComplete(() =>
-                {
-                    float y_off = 2.0f;
-                    float z_off = 2.0f;
-                    Vector3 sinkDirection = (-Vector3.up * y_off) + (-transform.forward * z_off);
-                    Vector3 targetPosition = transform.position + sinkDirection;
-
-                    transform.DOMove(targetPosition, timeToSink).SetEase(Ease.Linear).OnComplete(() =>
-                    {
-                        Destroy(gameObject);
-                    });
-                });
-            }
+			FightAnimation(collision.transform.position);
+			
 		}
-	}
+
+        if (collision.gameObject.CompareTag("rock"))
+        {
+            healthPoints -= 0.5f;
+            rb.AddForce(5.0f * boatSpeed * transform.forward);
+            if (healthPoints <= 0.0f)
+            {
+                isDead = true;
+                DeathAnimation();
+            }
+        }
+    }
 
 	private void OnTriggerEnter(Collider other)
 	{
@@ -202,5 +185,43 @@ public class BoatBehaviour : MonoBehaviour
 			Debug.Log($"Sprzedano [{string.Join(", ", carriedResources)}] w porcie {hitPort.gameObject.name}. Zarobiono {finalReward}$ (baza: {baseReward}$).");
 			Destroy(gameObject);
 		}
+	}
+
+    private void DeathAnimation()
+    {
+        GameObject o = Instantiate(ps, Vector3.zero, Quaternion.identity, transform);
+        o.transform.localPosition = Vector3.zero;
+        transform.DORotate(new Vector3(-50f, 0f, 0f), timeToRotate).SetRelative(true).SetEase(Ease.InOutSine).OnComplete(() =>
+        {
+            float y_off = 2.0f;
+            float z_off = 2.0f;
+            Vector3 sinkDirection = (-Vector3.up * y_off) + (-transform.forward * z_off);
+            Vector3 targetPosition = transform.position + sinkDirection;
+
+            transform.DOMove(targetPosition, timeToSink).SetEase(Ease.Linear).OnComplete(() =>
+            {
+                Destroy(gameObject);
+            });
+        });
+    }
+
+	private void FightAnimation(Vector3 pos)
+	{
+		rb.isKinematic = true;
+		transform.DOMove(transform.position, 1.5f).OnComplete(() =>
+		{
+			rb.isKinematic = false;
+            healthPoints -= 1.0f;
+            if (healthPoints <= 0.0f)
+            {
+                isDead = true;
+                DeathAnimation();
+            } else
+			{
+				Vector3 dir = (transform.position - pos).normalized;
+				transform.forward = dir;
+                rb.AddForce(5.0f * boatSpeed * transform.forward);
+            }
+        });
 	}
 }
