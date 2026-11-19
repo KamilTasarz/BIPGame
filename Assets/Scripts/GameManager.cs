@@ -16,6 +16,14 @@ public enum ResourceType
 }
 
 [Serializable]
+public struct ResourceData
+{
+	public ResourceType type;
+	public Sprite icon;
+	public int basePrice;
+}
+
+[Serializable]
 public class Wave
 {
 	public string waveName = "New Wave";
@@ -50,6 +58,9 @@ public class GameManager : MonoBehaviour
 	[Header("Prefabs")]
 	public GameObject boatPrefab;
 	public Transform boatParent;
+
+	[Header("Resources Database")]
+	public List<ResourceData> resourceDatabase = new List<ResourceData>();
 
 	[Header("Data")]
 	public List<Wave> waves = new List<Wave>();
@@ -117,6 +128,46 @@ public class GameManager : MonoBehaviour
 				OnWaveComplete();
 			}
 		}
+	}
+
+	public Sprite GetResourceIcon(ResourceType type)
+	{
+		foreach (ResourceData data in resourceDatabase)
+		{
+			if (data.type == type)
+			{
+				return data.icon;
+			}
+		}
+		return null;
+	}
+
+	public int GetResourceBasePrice(ResourceType type)
+	{
+		foreach (ResourceData data in resourceDatabase)
+		{
+			if (data.type == type)
+			{
+				return data.basePrice;
+			}
+		}
+		return 25;
+	}
+
+	public ResourceType GetRandomExtraResource(ResourceType excludeType)
+	{
+		ResourceType[] allTypes = (ResourceType[])Enum.GetValues(typeof(ResourceType));
+		List<ResourceType> candidates = new List<ResourceType>();
+
+		foreach (ResourceType t in allTypes)
+		{
+			if (t != excludeType)
+			{
+				candidates.Add(t);
+			}
+		}
+
+		return candidates[UnityEngine.Random.Range(0, candidates.Count)];
 	}
 
 	public void StartWave(int index)
@@ -189,20 +240,33 @@ public class GameManager : MonoBehaviour
 		BoatBehaviour boatBehaviour = newBoat.GetComponent<BoatBehaviour>();
 		if (boatBehaviour != null)
 		{
-			boatBehaviour.carriedResource = destination.producedResource;
 			boatBehaviour.originPort = destination;
+			List<ResourceType> cargo = new List<ResourceType>
+			{
+				destination.producedResource,
+				GetRandomExtraResource(destination.producedResource)
+			};
+
+			boatBehaviour.SetCargo(cargo);
 		}
 	}
 
-	public void AddWaveEarnings(int amount)
+	public int AddWaveEarnings(int baseAmount)
 	{
-		if (!waveLasting) return;
+		if (!waveLasting) return 0;
 
-		float mult = UpgradesManager.Instance.ProvideCurrentModifierValue(UpgradesManager.Instance.modifiers[0]); 
-		int earnings = ((int)(amount * mult));
+		float mult = UpgradesManager.Instance.ProvideCurrentModifierValue(UpgradesManager.Instance.modifiers[0]);
+		int earnings = Mathf.RoundToInt(baseAmount * mult);
 
 		currentWaveGold += earnings;
 		UpdateGoalUI();
+
+		if (ShopManager.instance != null)
+		{
+			ShopManager.instance.ChangeMoney(earnings);
+		}
+
+		return earnings;
 	}
 
 	private void UpdateGoalUI()
@@ -231,7 +295,11 @@ public class GameManager : MonoBehaviour
 				Destroy(boatParent.GetChild(i).gameObject);
 			}
 		}
-		PirateManager.Instance.ClearPirates();
+
+		if (PirateManager.Instance != null)
+		{
+			PirateManager.Instance.ClearPirates();
+		}
 	}
 
 	private void OnWaveComplete()
@@ -274,5 +342,4 @@ public class GameManager : MonoBehaviour
 	{
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
 	}
-
 }
