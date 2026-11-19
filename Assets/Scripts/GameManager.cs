@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Rendering.Canvas.ShaderGraph;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -47,6 +48,7 @@ public class GameManager : MonoBehaviour
 	public TextMeshProUGUI countdownTimer;
 	public TextMeshProUGUI goldGoalText;
 	public GameObject gameOverPanel;
+	public GameObject canvas;
 
 	[Header("Spawn Rate Settings")]
 	public float baseMinSpawnDelay = 10f;
@@ -181,8 +183,11 @@ public class GameManager : MonoBehaviour
 
 		if (waveNumberCounter != null)
 		{
-			waveNumberCounter.text = waves[index].waveNumber.ToString();
+			string temp = waves[index].waveNumber.ToString();
+			waveNumberCounter.text = "Wave " + temp;
 		}
+
+		canvas.SetActive(true);
 
 		UpdateGoalUI();
 
@@ -274,7 +279,7 @@ public class GameManager : MonoBehaviour
 		if (goldGoalText != null && currentWaveIndex < waves.Count)
 		{
 			int goal = waves[currentWaveIndex].requiredGold;
-			goldGoalText.text = $"Cel: {currentWaveGold} / {goal}$";
+			goldGoalText.text = $"Goal: {currentWaveGold} / {goal}$";
 		}
 	}
 
@@ -307,6 +312,8 @@ public class GameManager : MonoBehaviour
 		StopAllPortsAndClearBoats();
 
 		Wave finishedWave = waves[currentWaveIndex];
+
+		canvas.SetActive(false);
 
 		if (currentWaveGold < finishedWave.requiredGold)
 		{
