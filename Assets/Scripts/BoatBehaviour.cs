@@ -103,7 +103,7 @@ public class BoatBehaviour : MonoBehaviour
 	{
 		if (collision.gameObject.CompareTag("land"))
 		{
-			// Destroy(gameObject); 
+			Destroy(gameObject); 
 		}
 	}
 

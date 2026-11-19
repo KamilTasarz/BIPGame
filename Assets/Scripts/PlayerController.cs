@@ -22,8 +22,6 @@ public class PlayerController : MonoBehaviour
     public int circleSegments = 20;
     public float radius = 1.0f;
 
-    private float currentT = 0.0f;
-
     private LineRenderer line;
     private void Start()
     {
@@ -32,6 +30,7 @@ public class PlayerController : MonoBehaviour
         pullAction = pi.actions["pullAction"];
         mainCam = Camera.main;
         line = GetComponent<LineRenderer>();
+        line.enabled = false;
     }
 
     private void Update()
@@ -43,10 +42,20 @@ public class PlayerController : MonoBehaviour
         {
             Ray ray = mainCam.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-            if (waveObj) DrawCircle();
-
             if (Physics.Raycast(ray, out RaycastHit output, rayDistance, floorMask))
             {
+                print(output.collider.gameObject.tag);
+                if (output.collider.gameObject.CompareTag("land")) {
+                    
+                    if (waveObj) {
+                        Destroy(waveObj.gameObject);
+
+                        line.enabled = false;
+                        OnReleasedMouseButtons?.Invoke();
+                    }
+                    return;
+                }
+
                 if (waveObj != null)
                 {
                     waveObj.position = output.point;
@@ -59,6 +68,8 @@ public class PlayerController : MonoBehaviour
                 float sign = isPulling ? 1.0f : -1.0f;
                 OnPressedMouseButtons?.Invoke(output.point, sign);
             }
+
+            if (waveObj) DrawCircle();
         }
         else if (pushAction.WasReleasedThisFrame() || pullAction.WasReleasedThisFrame())
         {
@@ -85,11 +96,11 @@ public class PlayerController : MonoBehaviour
             float x = waveObj.position.x + Mathf.Cos(angle) * radius;
             float y = waveObj.position.z + Mathf.Sin(angle) * radius;
 
-            line.SetPosition(i, new Vector3(x, 0.3f, y));
+            line.SetPosition(i, new Vector3(x, 0.15f, y));
 
         }
 
-        line.SetPosition(circleSegments, new Vector3(waveObj.position.x + radius, 0.3f, waveObj.position.z));
+        line.SetPosition(circleSegments, new Vector3(waveObj.position.x + radius, 0.15f, waveObj.position.z));
 
     }
 

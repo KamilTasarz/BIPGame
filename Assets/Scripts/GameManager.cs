@@ -19,13 +19,15 @@ public class Wave
 	public int waveNumber;
 	public float totalTime = 60f;
 	public int requiredGold = 100;
+	public int maxPiratesNumber = 3;
+	public float piratesSpawnTime = 10.0f;
 }
 
 public class GameManager : MonoBehaviour
 {
-	private bool waveLasting = false;
+	public bool waveLasting = false;
 
-	private int currentWaveIndex = 0;
+	public int currentWaveIndex = 0;
 	private float currentWaveTimeRemaining = 0f;
 	private int currentWaveGold = 0;
 
@@ -225,6 +227,7 @@ public class GameManager : MonoBehaviour
 				Destroy(boatParent.GetChild(i).gameObject);
 			}
 		}
+		PirateManager.Instance.ClearPirates();
 	}
 
 	private void OnWaveComplete()
