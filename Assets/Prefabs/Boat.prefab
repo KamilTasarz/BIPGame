@@ -133,7 +133,6 @@ MonoBehaviour:
   healthPoints: 2
   carriedResources: 
   originPort: {fileID: 0}
-  
   cargoIcons:
   - {fileID: 6997459293954834457}
   - {fileID: 7471140918031498197}
