@@ -4034,27 +4034,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3235211338053983199, guid: fa472d60669cd954bbb0a420a2be15fa, type: 3}
       propertyPath: resourceDatabase.Array.data[0].basePrice
-      value: 25
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3235211338053983199, guid: fa472d60669cd954bbb0a420a2be15fa, type: 3}
       propertyPath: resourceDatabase.Array.data[1].basePrice
-      value: 25
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3235211338053983199, guid: fa472d60669cd954bbb0a420a2be15fa, type: 3}
       propertyPath: resourceDatabase.Array.data[2].basePrice
-      value: 25
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3235211338053983199, guid: fa472d60669cd954bbb0a420a2be15fa, type: 3}
       propertyPath: resourceDatabase.Array.data[3].basePrice
-      value: 25
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3235211338053983199, guid: fa472d60669cd954bbb0a420a2be15fa, type: 3}
       propertyPath: resourceDatabase.Array.data[4].basePrice
-      value: 25
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 3235211338053983199, guid: fa472d60669cd954bbb0a420a2be15fa, type: 3}
       propertyPath: resourceDatabase.Array.data[5].basePrice
-      value: 25
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5217841958336176442, guid: fa472d60669cd954bbb0a420a2be15fa, type: 3}
       propertyPath: m_Name
