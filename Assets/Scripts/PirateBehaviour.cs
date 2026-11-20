@@ -211,7 +211,7 @@ public class PirateBehaviour : MonoBehaviour
     private void FightAnimation()
     {
         rb.isKinematic = true;
-        transform.DOMove(transform.position, 1.5f).OnComplete(() =>
+        transform.DOMove(transform.position, 2.0f).OnComplete(() =>
         {
             rb.isKinematic = false;
             isAnimation = false;
