@@ -158,7 +158,7 @@ public class BoatBehaviour : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		if (collision.gameObject.CompareTag("land"))
+		if (collision.gameObject.CompareTag("land") || collision.gameObject.CompareTag("boat"))
 		{
             isDead = true;
 			DeathAnimation();
