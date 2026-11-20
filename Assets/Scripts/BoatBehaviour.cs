@@ -206,6 +206,7 @@ public class BoatBehaviour : MonoBehaviour
 
         TurnCanvases(false);
         GameObject o = Instantiate(ps, Vector3.zero, Quaternion.identity, transform);
+		AudioManager.Instance.PlaySFX("boom");
         o.transform.localPosition = Vector3.zero;
         transform.DORotate(new Vector3(-50f, 0f, 0f), timeToRotate).SetRelative(true).SetEase(Ease.InOutSine).OnComplete(() =>
         {
@@ -262,6 +263,8 @@ public class BoatBehaviour : MonoBehaviour
 	}
 	private void DeliverAnimation(Vector3 portPos)
 	{
+
+		AudioManager.Instance.PlaySFX("coins");
 		
 		isAnimation = true;
 

@@ -68,37 +68,37 @@ Material:
     m_Ints: []
     m_Floats:
     - _Depth: 0.83
-    - _DepthFadeDistance: 0.2
+    - _DepthFadeDistance: 0.01
     - _FoamBlend: 0.56
     - _FoamTextureSamplingStep: 0.52
-    - _LightingHardness: 0.58
-    - _LightingSmoothness: 0.53
+    - _LightingHardness: 0
+    - _LightingSmoothness: 0
     - _NormalsScale: 2
     - _NormalsSpeed: 0.05
     - _NormalsStrength: 0.5
-    - _PosterizingSteps: 65.21
+    - _PosterizingSteps: 1.39
     - _PosterizingStpes: 100
     - _QueueControl: 0
     - _QueueOffset: 1
-    - _RefractionScale: 0.2
+    - _RefractionScale: 0
     - _RefractionSpeed: 0.01
     - _RefractionStrength: 0.01
     - _Steps: 100
     - _Strength: 0.43
-    - _SurfaceFoamDirection: 1
+    - _SurfaceFoamDirection: 2.72
     - _SurfaceFoamDistortion: 0.1
     - _SurfaceFoamSpeed: 0.05
-    - _SurfaceFoamTiling: 11.45
+    - _SurfaceFoamTiling: 12.18
     - _WaveLength: 0.8
     - _WaveSpeed: 0.3
     - _WaveSteepness: 0.05
     - _XRMotionVectorsPass: 1
     m_Colors:
-    - _DeepWaterColor: {r: 0.3906029, g: 0.33018857, b: 1, a: 0.8117647}
+    - _DeepWaterColor: {r: 0.073584795, g: 0.42052886, b: 1, a: 0.8117647}
     - _FoamColor: {r: 1, g: 1, b: 1, a: 0.25882354}
-    - _ShallowWaterColor: {r: 0.2413029, g: 0.84528524, b: 0.89433956, a: 0.6431373}
+    - _ShallowWaterColor: {r: 0, g: 0.9282509, b: 1, a: 0.6431373}
     - _ShalowWaterColor: {r: 0, g: 0.54538697, b: 0.78113204, a: 0.8627451}
-    - _SpecularColor: {r: 0.3283019, g: 0.3283019, b: 0.3283019, a: 1}
+    - _SpecularColor: {r: 0, g: 0, b: 0, a: 1}
     - _WaveDirections: {r: 0.2, g: 0.5, b: 0.66, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

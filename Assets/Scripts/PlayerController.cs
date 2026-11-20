@@ -51,7 +51,8 @@ public class PlayerController : MonoBehaviour
                         Destroy(waveObj.gameObject);
 
                         line.enabled = false;
-                        OnReleasedMouseButtons?.Invoke();
+						AudioManager.Instance.StopMusic(AudioManager.Instance.stepsSource);
+						OnReleasedMouseButtons?.Invoke();
                     }
                     return;
                 }
@@ -63,7 +64,8 @@ public class PlayerController : MonoBehaviour
                 else if (visualWave != null)
                 {
                     waveObj = Instantiate(visualWave, output.point, Quaternion.identity).transform;
-                }
+					AudioManager.Instance.PlayMusic("wind", AudioManager.Instance.stepsSource);
+				}
 
                 float sign = isPulling ? 1.0f : -1.0f;
                 var ps = waveObj.GetComponentInChildren<ParticleSystem>();
@@ -87,7 +89,8 @@ public class PlayerController : MonoBehaviour
                 Destroy(waveObj.gameObject);
                 line.enabled = false;
                 waveObj = null;
-            }
+				AudioManager.Instance.StopMusic(AudioManager.Instance.stepsSource);
+			}
 
             OnReleasedMouseButtons?.Invoke();
         }
@@ -113,5 +116,13 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    
+	private void OnDisable()
+	{
+		if (waveObj != null)
+		{
+			Destroy(waveObj.gameObject);
+			waveObj = null;
+			AudioManager.Instance.StopMusic(AudioManager.Instance.stepsSource);
+		}
+	}
 }

@@ -73,6 +73,8 @@ public class ShopManager : MonoBehaviour
 			ChangeMoney(-price);
 			mod.UpgradeToNextTier();
 
+			AudioManager.Instance.PlaySFX("buy");
+
 			Debug.Log($"Purchased upgrade: {mod.name} to Tier {mod.currentTier + 1}");
 			RefreshShopUI(); // Update UI immediately after purchase
 		} else
