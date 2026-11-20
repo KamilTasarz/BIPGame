@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
 	public TextMeshProUGUI waveNumberCounter;
 	public TextMeshProUGUI countdownTimer;
 	public TextMeshProUGUI goldGoalText;
+	public TextMeshProUGUI endPanelWaveScore;
 	public GameObject gameOverPanel;
 	public GameObject canvas;
 
@@ -329,6 +330,7 @@ public class GameManager : MonoBehaviour
 			Debug.Log($"PRZEGRANA! Zebrano {currentWaveGold}$ z wymaganych {finishedWave.requiredGold}$.");
 			if (countdownTimer != null) countdownTimer.text = "GAME OVER!";
 			if (gameOverPanel != null) gameOverPanel.SetActive(true);
+			if (endPanelWaveScore) endPanelWaveScore.text = "You achieved: " + currentWaveIndex + 1 + " waves! \n Final gold is: "+ ShopManager.instance.playerGold;
 			return;
 		}
 

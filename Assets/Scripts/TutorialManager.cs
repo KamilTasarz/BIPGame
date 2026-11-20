@@ -50,6 +50,7 @@ public class TutorialManager : MonoBehaviour
             {
                 canvas.gameObject.SetActive(false);
                 isTutorial = false;
+                GameManager.Instance.canvas.SetActive(true);
             }
         }
     }

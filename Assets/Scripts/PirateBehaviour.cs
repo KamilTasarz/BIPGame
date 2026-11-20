@@ -59,24 +59,26 @@ public class PirateBehaviour : MonoBehaviour
         if (isDead) return;
         if (isAnimation) return;
 
-        mark.rectTransform.position = Camera.main.WorldToScreenPoint(transform.position);
+        Vector3 offset = new Vector3(20, 20, 0);
 
-        if (targetBoat && Vector3.Distance(targetBoat.transform.position, transform.position) < 3.0f)
-        {
-            if (mark.transform.localScale.x < 1.0f)
-            {
-                mark.transform.DOKill();
-                mark.transform.DOScale(1, 0.5f);
-            }
-        } else
-        {
+        mark.rectTransform.position = Camera.main.WorldToScreenPoint(transform.position) + offset;
 
-            if (mark.transform.localScale.x > 0.0f)
-            {
-                mark.transform.DOKill();
-                mark.transform.DOScale(0, 0.5f);
-            }
-        }
+        //if (targetBoat && Vector3.Distance(targetBoat.transform.position, transform.position) < 3.0f)
+        //{
+        //    if (mark.transform.localScale.x < 1.0f)
+        //    {
+        //        mark.transform.DOKill();
+        //        mark.transform.DOScale(1, 0.5f);
+        //    }
+        //} else
+        //{
+
+        //    if (mark.transform.localScale.x > 0.0f)
+        //    {
+        //        mark.transform.DOKill();
+        //        mark.transform.DOScale(0, 0.5f);
+        //    }
+        //}
 
         if (timerToCheckBoats <= 0.0f)
         {
