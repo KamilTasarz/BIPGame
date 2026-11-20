@@ -4407,9 +4407,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 2088077378662681114, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
+      propertyPath: m_fontSize
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2088077378662681114, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 5834c3d99edb4464f84201e631cab1b3, type: 2}
+    - target: {fileID: 2088077378662681114, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 2088077378662681114, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
       propertyPath: m_sharedMaterial
       value: 
@@ -4423,9 +4431,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3555133474070090356, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
+      propertyPath: m_fontSize
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3555133474070090356, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 5834c3d99edb4464f84201e631cab1b3, type: 2}
+    - target: {fileID: 3555133474070090356, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 3555133474070090356, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
       propertyPath: m_sharedMaterial
       value: 
@@ -4439,9 +4455,17 @@ PrefabInstance:
       value: Debug
       objectReference: {fileID: 0}
     - target: {fileID: 8077075575181772286, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
+      propertyPath: m_fontSize
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 8077075575181772286, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
       propertyPath: m_fontAsset
       value: 
       objectReference: {fileID: 11400000, guid: 5834c3d99edb4464f84201e631cab1b3, type: 2}
+    - target: {fileID: 8077075575181772286, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8077075575181772286, guid: 0d83cc907934ba24cb8770ced6d06a56, type: 3}
       propertyPath: m_sharedMaterial
       value: 
@@ -4852,6 +4876,22 @@ PrefabInstance:
       propertyPath: canvas
       value: 
       objectReference: {fileID: 1268304219}
+    - target: {fileID: 5758702770380344791, guid: af904b75b1c77c84f98493220afb014c, type: 3}
+      propertyPath: 'texts.Array.data[0]'
+      value: Control ships and guide them to port..
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758702770380344791, guid: af904b75b1c77c84f98493220afb014c, type: 3}
+      propertyPath: 'texts.Array.data[1]'
+      value: Press left mouse button to pull ships in.
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758702770380344791, guid: af904b75b1c77c84f98493220afb014c, type: 3}
+      propertyPath: 'texts.Array.data[2]'
+      value: Press right mouse button to push ships away.
+      objectReference: {fileID: 0}
+    - target: {fileID: 5758702770380344791, guid: af904b75b1c77c84f98493220afb014c, type: 3}
+      propertyPath: 'texts.Array.data[3]'
+      value: Watch out for pirate ships.
+      objectReference: {fileID: 0}
     - target: {fileID: 8187885074042262032, guid: af904b75b1c77c84f98493220afb014c, type: 3}
       propertyPath: m_Name
       value: TutorialManager
@@ -4952,6 +4992,10 @@ PrefabInstance:
     - target: {fileID: 4722318044902466557, guid: 59c1a5e4cca8bb34faa98d2cde8f93fd, type: 3}
       propertyPath: m_Name
       value: TutorialCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 4722318044902466557, guid: 59c1a5e4cca8bb34faa98d2cde8f93fd, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
