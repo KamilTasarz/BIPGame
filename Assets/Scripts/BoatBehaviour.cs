@@ -199,6 +199,7 @@ public class BoatBehaviour : MonoBehaviour
 
 			Debug.Log($"Sprzedano [{string.Join(", ", carriedResources)}] w porcie {hitPort.gameObject.name}. Zarobiono {finalReward}$ (baza: {baseReward}$).");
 			DeliverAnimation(other.transform.position);
+			hitPort.PlayParts();
 		}
 	}
 
