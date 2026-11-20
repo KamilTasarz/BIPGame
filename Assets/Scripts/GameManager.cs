@@ -110,6 +110,11 @@ public class GameManager : MonoBehaviour
 
 	private void Update()
 	{
+		if (TutorialManager.Instance.isTutorial)
+		{
+			canvas.SetActive(false);
+			return;
+		}
 		if (waveLasting)
 		{
 			if (currentWaveTimeRemaining > 0f)
