@@ -12,6 +12,8 @@ public class Port : MonoBehaviour
 	[Header("Demand UI Icons (Przypisz 2 ikonki)")]
 	public Image[] desiredIcons;
 
+	public ParticleSystem ps;
+
 	private bool isSpawningActive = false;
 	private bool hasWaitingBoat = false;
 	private float spawnTimer = 0f;
@@ -19,6 +21,10 @@ public class Port : MonoBehaviour
 	private void Start()
 	{
 		RollNewDemand();
+		if (ps != null)
+		{
+			ps.Stop();	
+		}
 	}
 
 	private void Update()
@@ -118,5 +124,12 @@ public class Port : MonoBehaviour
 	{
 		GameManager.Instance.SpawnBoatAtPort(this);
 		hasWaitingBoat = true;
+	}
+
+	public void PlayParts()
+	{
+		if (ps != null) {
+			ps.Play();
+		}
 	}
 }
