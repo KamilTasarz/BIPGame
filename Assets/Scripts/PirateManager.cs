@@ -26,6 +26,7 @@ public class PirateManager : MonoBehaviour
 
     void Update()
     {
+        if (TutorialManager.Instance.isTutorial) return;
         if (!GameManager.Instance.waveLasting) return;
         if (timer <= 0.0f && pirates.Count < GameManager.Instance.waves[GameManager.Instance.currentWaveIndex].maxPiratesNumber)
         {

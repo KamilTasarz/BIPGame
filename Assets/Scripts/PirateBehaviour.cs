@@ -55,6 +55,7 @@ public class PirateBehaviour : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (TutorialManager.Instance.isTutorial) return;
         if (isDead) return;
         if (isAnimation) return;
 
