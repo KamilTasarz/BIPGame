@@ -188,6 +188,7 @@ public class GameManager : MonoBehaviour
 		}
 
 		canvas.SetActive(true);
+		AudioManager.Instance.PlayMusic("ocean", AudioManager.Instance.musicSource);
 
 		UpdateGoalUI();
 
@@ -311,6 +312,9 @@ public class GameManager : MonoBehaviour
 	{
 		StopAllPortsAndClearBoats();
 
+		AudioManager.Instance.StopMusic(AudioManager.Instance.musicSource);
+		AudioManager.Instance.PlaySFX("win");
+
 		Wave finishedWave = waves[currentWaveIndex];
 
 		canvas.SetActive(false);
@@ -329,6 +333,7 @@ public class GameManager : MonoBehaviour
 		if (nextIndex < waves.Count)
 		{
 			ShopManager.instance.OpenShop();
+			
 		} else
 		{
 			Debug.Log("All waves finished!");

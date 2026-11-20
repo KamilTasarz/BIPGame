@@ -167,6 +167,7 @@ public class PirateBehaviour : MonoBehaviour
 
     private void DeathAnimation()
     {
+        AudioManager.Instance.PlaySFX("boom");
         GameObject o = Instantiate(ps, Vector3.zero, Quaternion.identity, transform);
         o.transform.localPosition = Vector3.zero;
         transform.DORotate(new Vector3(-50f, 0f, 0f), timeToRotate).SetRelative(true).SetEase(Ease.InOutSine).OnComplete(() =>
