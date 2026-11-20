@@ -1,6 +1,6 @@
 ﻿using DG.Tweening;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class PirateBehaviour : MonoBehaviour
 {
@@ -9,6 +9,8 @@ public class PirateBehaviour : MonoBehaviour
     public float radius = 1.0f;
     public float rotSpeed = 10.0f;
     public float howOftenCheckBoats = 5.0f;
+
+    public Image mark;
 
     [Header("Destroy properties")]
     public GameObject ps;
@@ -56,11 +58,31 @@ public class PirateBehaviour : MonoBehaviour
         if (isDead) return;
         if (isAnimation) return;
 
+        mark.rectTransform.position = Camera.main.WorldToScreenPoint(transform.position);
+
+        if (targetBoat && Vector3.Distance(targetBoat.transform.position, transform.position) < 3.0f)
+        {
+            if (mark.transform.localScale.x < 1.0f)
+            {
+                mark.transform.DOKill();
+                mark.transform.DOScale(1, 0.5f);
+            }
+        } else
+        {
+
+            if (mark.transform.localScale.x > 0.0f)
+            {
+                mark.transform.DOKill();
+                mark.transform.DOScale(0, 0.5f);
+            }
+        }
+
         if (timerToCheckBoats <= 0.0f)
         {
             FindClosestBoat();
             timerToCheckBoats = howOftenCheckBoats;
-        } else
+        }
+        else
         {
             timerToCheckBoats -= Time.fixedDeltaTime;
         }
@@ -167,6 +189,8 @@ public class PirateBehaviour : MonoBehaviour
 
     private void DeathAnimation()
     {
+        mark.transform.DOKill();
+        mark.transform.DOScale(0, 0.5f);
         GameObject o = Instantiate(ps, Vector3.zero, Quaternion.identity, transform);
         o.transform.localPosition = Vector3.zero;
         transform.DORotate(new Vector3(-50f, 0f, 0f), timeToRotate).SetRelative(true).SetEase(Ease.InOutSine).OnComplete(() =>

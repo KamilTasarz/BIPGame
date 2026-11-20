@@ -93,6 +93,7 @@ public class BoatBehaviour : MonoBehaviour
 		if (isDead) return;
         if (isAnimation) return;
 
+
         Vector3 flatBoatPos = new Vector3(transform.position.x, 0f, transform.position.z);
 		Vector3 flatPointPos = new Vector3(lastPoint.x, 0f, lastPoint.z);
 		float dist = Vector3.Distance(flatPointPos, flatBoatPos);
@@ -240,7 +241,7 @@ public class BoatBehaviour : MonoBehaviour
 			{
 				Vector3 dir = (transform.position - pos).normalized;
 				transform.forward = dir;
-                rb.AddForce(5.0f * boatSpeed * transform.forward);
+				transform.position += transform.forward * 0.02f;
             }
         });
 	}
