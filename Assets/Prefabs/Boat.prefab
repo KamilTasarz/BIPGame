@@ -131,6 +131,7 @@ MonoBehaviour:
   timeToRotate: 0.5
   timeToSink: 1.5
   ps1: {fileID: 6176259585794087172, guid: ebf85d4188685df4d9ede0d83a2f8b13, type: 3}
+  ps2: {fileID: 1380298286171621965, guid: 12ab4fa4885de1f4aab374bc7ec13697, type: 3}
   healthPoints: 2
   carriedResources: 
   originPort: {fileID: 0}

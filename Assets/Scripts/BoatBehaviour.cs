@@ -17,6 +17,8 @@ public class BoatBehaviour : MonoBehaviour
     public float timeToSink = 1.5f;
     [Header("Deliver properties")]
     public GameObject ps1;
+    public GameObject ps2;
+	private GameObject instance_ps;
 
     [HideInInspector] public float healthPoints = 1.1f;
 
@@ -230,12 +232,15 @@ public class BoatBehaviour : MonoBehaviour
 
 		TurnCanvases(false);
 
+		instance_ps = Instantiate(ps2, transform);
+
         transform.DOMove(transform.position, 1.5f).OnComplete(() =>
 		{
 			rb.isKinematic = false;
             healthPoints -= 1.0f;
 			isAnimation = false;
 			TurnCanvases(true);
+			Destroy(instance_ps);
             if (healthPoints <= 0.0f)
             {
                 isDead = true;

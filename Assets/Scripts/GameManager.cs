@@ -327,10 +327,14 @@ public class GameManager : MonoBehaviour
 
 		if (currentWaveGold < finishedWave.requiredGold)
 		{
-			Debug.Log($"PRZEGRANA! Zebrano {currentWaveGold}$ z wymaganych {finishedWave.requiredGold}$.");
+
+            canvas.SetActive(true);
+            Debug.Log($"PRZEGRANA! Zebrano {currentWaveGold}$ z wymaganych {finishedWave.requiredGold}$.");
 			if (countdownTimer != null) countdownTimer.text = "GAME OVER!";
 			if (gameOverPanel != null) gameOverPanel.SetActive(true);
-			if (endPanelWaveScore) endPanelWaveScore.text = "You achieved: " + currentWaveIndex + 1 + " waves! \n Final gold is: "+ ShopManager.instance.playerGold;
+			int val = currentWaveIndex + 1;
+
+            if (endPanelWaveScore) endPanelWaveScore.text = "You achieved: " + val + " waves! \n Final gold is: "+ ShopManager.instance.playerGold;
 			return;
 		}
 
